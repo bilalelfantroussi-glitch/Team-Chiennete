@@ -1,0 +1,2862 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Chienneté</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #111; min-height: 100vh; }
+
+/* ===== AUTH SCREEN ===== */
+#auth-screen { position:fixed; inset:0; background:#f5f5f5; z-index:2000; overflow-y:auto; }
+#auth-screen.hidden { display:none; }
+.auth-page { display:none; min-height:100vh; padding:20px 20px 40px; max-width:480px; margin:0 auto; }
+.auth-page.active { display:block; }
+
+.auth-logo { text-align:center; padding:50px 0 28px; }
+.auth-logo-sq { width:72px; height:72px; background:#111; border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+.auth-logo-sq span { font-size:32px; font-weight:800; color:#FFD700; }
+.auth-logo-name { font-size:24px; font-weight:800; color:#111; }
+.auth-logo-sub { font-size:13px; color:#888; margin-top:4px; }
+
+.auth-card { background:#fff; border-radius:20px; padding:28px 24px; }
+.auth-title { font-size:20px; font-weight:800; color:#111; margin-bottom:6px; }
+.auth-subtitle-main { font-size:13px; color:#888; margin-bottom:24px; line-height:1.5; }
+
+.btn-social {
+  width:100%; padding:14px; border-radius:14px; border:1.5px solid #eee;
+  font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; gap:12px; margin-bottom:12px; background:#fff; transition:all .2s;
+  color:#111;
+}
+.btn-social:hover { border-color:#bbb; background:#f9f9f9; }
+.social-icon-g, .social-icon-a {
+  width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.social-icon-a { background:#111; border-radius:6px; }
+
+.auth-conditions { font-size:11px; color:#aaa; text-align:center; margin-top:16px; line-height:1.6; }
+.rgpd-link { color:#111; font-weight:600; cursor:pointer; }
+
+.btn-invite {
+  width:100%; padding:14px; background:none; border:none;
+  font-size:14px; font-weight:600; color:#888; cursor:pointer;
+  text-align:center; margin-top:16px; transition:color .2s;
+}
+.btn-invite:hover { color:#111; }
+
+.auth-pseudo-group { margin-bottom:16px; }
+.ap-option.lg { width:52px; height:52px; font-size:24px; border-radius:14px; }
+
+/* ===== BOUTON LAUNCH MODERNE ===== */
+.btn-launch-modern {
+  width:100%; padding:18px 24px; background:#FFD700; color:#111;
+  border:none; border-radius:16px; font-size:17px; font-weight:800;
+  cursor:pointer; transition:all .25s; display:flex; align-items:center;
+  justify-content:center; gap:10px; margin-top:10px; margin-bottom:14px;
+  letter-spacing:.3px;
+}
+.btn-launch-modern:hover { background:#f5c800; transform:translateY(-2px); }
+.btn-launch-modern:active { transform:scale(0.98); }
+.btn-arrow { font-size:20px; transition:transform .2s; }
+.btn-launch-modern:hover .btn-arrow { transform:translateX(4px); }
+
+/* ===== PAGE BIENVENUE ===== */
+.welcome-screen {
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:#111; padding:30px 20px; z-index:2500;
+}
+.welcome-content { text-align:center; max-width:400px; width:100%; }
+.welcome-logo { margin-bottom:24px; }
+.welcome-emoji {
+  font-size:64px; margin-bottom:20px;
+  animation: bounce 1s ease infinite alternate;
+}
+@keyframes bounce { from { transform:translateY(0); } to { transform:translateY(-10px); } }
+.welcome-title {
+  font-size:26px; font-weight:800; color:#fff;
+  line-height:1.3; margin-bottom:10px;
+}
+.welcome-pseudo {
+  font-size:32px; font-weight:800; color:#FFD700;
+  margin-bottom:10px; letter-spacing:-1px;
+}
+.welcome-sub { font-size:14px; color:#666; margin-bottom:32px; }
+.welcome-badges {
+  display:flex; gap:12px; justify-content:center; margin-bottom:36px;
+}
+.wb-item {
+  background:#1a1a1a; border-radius:14px; padding:14px 12px;
+  flex:1; max-width:100px;
+}
+.wb-icon { font-size:22px; margin-bottom:6px; }
+.wb-text { font-size:11px; color:#888; font-weight:600; line-height:1.4; }
+.btn-welcome-start {
+  width:100%; padding:18px; background:#FFD700; color:#111;
+  border:none; border-radius:16px; font-size:17px; font-weight:800;
+  cursor:pointer; transition:all .2s; letter-spacing:.3px;
+}
+.btn-welcome-start:hover { background:#f5c800; transform:translateY(-2px); }
+.btn-welcome-start:active { transform:scale(0.98); }
+
+/* ===== SPLASH ===== */
+#splash {
+  position: fixed; inset: 0; background: #fff; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  z-index: 1000; transition: opacity .5s ease;
+}
+#splash.hidden { opacity: 0; pointer-events: none; }
+.splash-logo { width: 80px; height: 80px; background: #111; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.splash-logo span { font-size: 36px; font-weight: 800; color: #FFD700; }
+.splash-title { font-size: 28px; font-weight: 800; color: #111; letter-spacing: -1px; }
+.splash-sub { font-size: 14px; color: #888; margin-top: 6px; margin-bottom: 40px; }
+.splash-stats { display: flex; gap: 48px; margin-bottom: 48px; }
+.stat { text-align: center; }
+.stat-num { font-size: 22px; font-weight: 800; color: #111; }
+.stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+.btn-enter { background: #111; color: #fff; border: none; padding: 16px 48px; border-radius: 99px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .15s; }
+.btn-enter:hover { transform: scale(1.03); }
+.btn-enter:active { transform: scale(0.97); }
+.splash-footer { font-size: 11px; color: #bbb; margin-top: 20px; }
+
+/* ===== APP ===== */
+#app { display: none; max-width: 480px; margin: 0 auto; min-height: 100vh; background: #fff; }
+#app.visible { display: block; }
+
+/* ===== HEADER ===== */
+header {
+  background: #fff; padding: 14px 18px; display: flex; align-items: center;
+  justify-content: space-between; border-bottom: 1px solid #eee;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo-row { display: flex; align-items: center; gap: 10px; }
+.logo-sq { width: 34px; height: 34px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.logo-sq span { font-size: 15px; font-weight: 800; color: #FFD700; }
+.logo-name { font-size: 16px; font-weight: 800; color: #111; }
+.logo-sub { font-size: 10px; color: #888; margin-top: 1px; }
+.live-dot { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #e53935; }
+.dot { width: 7px; height: 7px; background: #e53935; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ===== NAV ===== */
+nav { display: flex; background: #fff; border-bottom: 1px solid #eee; }
+nav button {
+  flex: 1; padding: 11px 4px; background: none; border: none; color: #aaa;
+  font-size: 11px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s;
+}
+nav button.active { color: #111; border-bottom-color: #111; font-weight: 700; }
+
+/* ===== SECTIONS ===== */
+.section { display: none; padding: 16px; }
+.section.active { display: block; }
+.section-label { font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
+
+/* ===== SOUS-ONGLETS VOTE ===== */
+.vote-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.vote-tab {
+  flex: 1; padding: 10px 8px; background: #f5f5f5; border: 1.5px solid #eee;
+  border-radius: 12px; font-size: 13px; font-weight: 600; color: #aaa;
+  cursor: pointer; text-align: center; transition: all .2s;
+}
+.vote-tab.active { background: #111; color: #fff; border-color: #111; }
+.vote-tab-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+.vote-panel { display: none; }
+.vote-panel.active { display: block; }
+
+/* ===== MESSAGE RÉSULTATS ===== */
+.result-info {
+  background: #fff5f5; border: 1px solid #ffd0d0; border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
+}
+.result-icon { width: 30px; height: 30px; background: #ffebeb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.result-title { font-size: 13px; font-weight: 700; color: #c62828; }
+.result-desc { font-size: 11px; color: #888; margin-top: 2px; }
+
+/* ===== VOTE BANNER ===== */
+.vote-banner {
+  background: #111; border-radius: 16px; padding: 18px; margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.week-pill { background: #FFD700; color: #111; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 99px; display: inline-block; margin-bottom: 7px; }
+.vote-banner h2 { font-size: 16px; font-weight: 800; color: #fff; }
+.vote-banner p { font-size: 12px; color: #888; margin-top: 3px; }
+.timer-box { text-align: right; }
+.timer-num { font-size: 20px; font-weight: 800; color: #FFD700; display: block; }
+.timer-lab { font-size: 10px; color: #555; }
+
+/* ===== CARTES MEMBRES (pleine largeur) ===== */
+.members-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; background: #fff; }
+.member-card {
+  background: #fff; border: 1.5px solid #eee; border-radius: 14px;
+  padding: 14px 16px; cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 14px;
+}
+.member-card:hover { border-color: #bbb; }
+.member-card.selected { border-color: #111; background: #f0f0f0; }
+.member-card.voted { border-color: #FFD700; background: #fffde7; }
+.avatar {
+  width: 46px; height: 46px; border-radius: 50%; display: flex; flex-shrink: 0;
+  align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+}
+.member-info { flex: 1; min-width: 0; }
+.member-name { font-size: 14px; font-weight: 700; color: #111; }
+.member-projet { font-size: 11px; color: #888; margin-top: 2px; margin-bottom: 6px; }
+.bar-bg { height: 4px; background: #eee; border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 4px; background: #111; border-radius: 2px; transition: width .6s ease; }
+.bar-fill.gold { background: #FFD700; }
+.bar-pct { font-size: 10px; color: #aaa; margin-top: 4px; }
+.voted-tag { font-size: 10px; color: #b8860b; font-weight: 700; }
+
+/* ===== BTN VOTE ===== */
+.btn-vote {
+  width: 100%; padding: 15px; background: #111; color: #fff; border: none;
+  border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform .15s; margin-top: 4px;
+}
+.btn-vote:hover { background: #222; }
+.btn-vote:active { transform: scale(0.98); }
+.btn-vote:disabled { background: #ddd; color: #aaa; cursor: not-allowed; transform: none; }
+
+/* ===== PROFILS TEAM ===== */
+.profile-card { background: #fafafa; border: 1px solid #eee; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+.profile-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.profile-av { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; flex-shrink: 0; }
+.profile-name { font-size: 15px; font-weight: 800; color: #111; }
+.profile-role { font-size: 12px; color: #888; margin-top: 2px; }
+.proj-label { font-size: 11px; font-weight: 700; color: #111; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.proj-text { font-size: 13px; color: #444; line-height: 1.6; }
+.prog-row { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 12px; margin-bottom: 5px; }
+.prog-bg { height: 5px; background: #eee; border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 5px; background: #111; border-radius: 3px; }
+
+/* ===== CLASSEMENT ===== */
+.lb-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+.lb-row:last-child { border-bottom: none; }
+.lb-rank { font-size: 14px; font-weight: 800; width: 22px; text-align: center; color: #ccc; }
+.r1 { color: #FFD700; } .r2 { color: #aaa; } .r3 { color: #cd7f32; }
+.lb-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; }
+.lb-info { flex: 1; }
+.lb-name { font-size: 14px; font-weight: 700; color: #111; }
+.lb-detail { font-size: 11px; color: #888; margin-top: 2px; }
+.lb-pts { font-size: 15px; font-weight: 800; color: #111; }
+
+/* ===== ELIMINATIONS ===== */
+.elim-card { background: #fff5f5; border: 1px solid #ffd0d0; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+.elim-av { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; background: #eee; color: #aaa; flex-shrink: 0; }
+.elim-name { font-size: 14px; font-weight: 700; color: #c62828; }
+.elim-reason { font-size: 12px; color: #888; margin-top: 2px; }
+.elim-week { font-size: 11px; color: #ccc; margin-top: 4px; }
+.retour-box { background: #fffde7; border: 1px solid #ffe082; border-radius: 12px; padding: 14px; margin-top: 6px; }
+.retour-title { font-size: 12px; font-weight: 700; color: #b8860b; margin-bottom: 4px; }
+.retour-text { font-size: 12px; color: #888; line-height: 1.6; }
+
+/* ===== CLASSEMENT MENSUEL ===== */
+.reset-banner {
+  background: #111; border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+}
+.reset-title { font-size: 14px; font-weight: 700; color: #fff; }
+.reset-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.reset-timer { font-size: 13px; font-weight: 700; color: #FFD700; text-align: right; }
+
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 8px; margin-bottom: 8px; }
+.podium-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.podium-crown { font-size: 20px; margin-bottom: 4px; }
+.podium-av { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+.podium-name { font-size: 12px; font-weight: 700; color: #111; text-align: center; }
+.podium-pts { font-size: 10px; color: #888; margin-top: 2px; margin-bottom: 6px; }
+.podium-block { width: 100%; text-align: center; font-size: 16px; font-weight: 800; color: #fff; padding: 10px 0; border-radius: 8px 8px 0 0; }
+.p1 { background: #FFD700; color: #111; height: 70px; display: flex; align-items: center; justify-content: center; }
+.p2 { background: #aaa; height: 55px; display: flex; align-items: center; justify-content: center; }
+.p3 { background: #cd7f32; height: 42px; display: flex; align-items: center; justify-content: center; }
+
+.lb-trend { font-size: 10px; margin-top: 3px; text-align: right; font-weight: 600; }
+.lb-trend.up { color: #2e7d32; }
+.lb-trend.down { color: #c62828; }
+
+.reset-note {
+  background: #fffde7; border: 1px solid #ffe082; border-radius: 10px;
+  padding: 12px 14px; margin-top: 16px; font-size: 12px; color: #888; line-height: 1.6; text-align: center;
+}
+
+/* ===== RÉSULTATS PALMARES ===== */
+.resultats-header { text-align:center; padding: 16px 0 8px; }
+.resultats-title { font-size:20px; font-weight:800; color:#111; }
+.resultats-sub { font-size:12px; color:#aaa; margin-top:4px; }
+
+.resultats-legend { display:flex; justify-content:center; gap:20px; margin-bottom:16px; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--color-text-secondary); }
+.legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.legend-dot.div { background:#512da8; }
+.legend-dot.proj { background:#2e7d32; }
+
+.resultats-list { display:flex; flex-direction:column; gap:10px; }
+
+.result-week-card {
+  background:#fff; border:1.5px solid #eee; border-radius:16px;
+  padding:14px 16px; transition: border-color .2s;
+}
+.result-week-card:hover { border-color:#ccc; }
+.result-week-card.current { border-color:#FFD700; background:#fffde7; }
+
+.rwc-week { margin-bottom:12px; }
+.rwc-label { font-size:13px; font-weight:700; color:#111; }
+.rwc-dates { font-size:11px; color:#aaa; margin-top:2px; }
+
+.rwc-winners { display:flex; gap:10px; }
+.rwc-winner {
+  flex:1; display:flex; align-items:center; gap:8px;
+  padding:10px 12px; border-radius:12px;
+}
+.rwc-winner.div { background:#f3f0ff; }
+.rwc-winner.proj { background:#f0faf4; }
+.rwc-icon { font-size:14px; flex-shrink:0; }
+.rwc-av {
+  width:28px; height:28px; border-radius:50%; display:flex; flex-shrink:0;
+  align-items:center; justify-content:center; font-weight:800; font-size:10px;
+}
+.rwc-name { font-size:12px; font-weight:700; color:#111; }
+
+
+
+/* ===== VERROUILLAGE VOTE ===== */
+.lock-banner {
+  background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
+}
+.lock-icon { font-size: 22px; flex-shrink: 0; }
+.lock-title { font-size: 13px; font-weight: 700; color: #555; }
+.lock-desc { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+/* ===== CONFIRMATION VOTE ===== */
+.vote-confirm {
+  background: #f0faf0; border: 1.5px solid #a5d6a7; border-radius: 14px;
+  padding: 16px 18px; margin-top: 12px; text-align: center;
+}
+.confirm-text { font-size: 15px; font-weight: 700; color: #2e7d32; margin-bottom: 6px; }
+.confirm-timer { font-size: 13px; color: #888; }
+.confirm-timer span { font-weight: 700; color: #111; }
+
+/* ===== REPÊCHAGE ===== */
+.repechage-header {
+  margin: 24px 0 14px;
+  padding-top: 20px;
+  border-top: 1.5px solid #eee;
+}
+.repechage-title { font-size: 18px; font-weight: 800; color: #111; }
+.repechage-sub { font-size: 12px; color: #aaa; margin-top: 4px; }
+
+.repechage-card {
+  background: #fff; border: 1.5px solid #eee; border-radius: 16px;
+  padding: 16px; margin-bottom: 12px; transition: border-color .2s;
+}
+.repechage-card:hover { border-color: #ccc; }
+
+.rep-info { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.rep-name { font-size: 15px; font-weight: 800; color: #111; }
+.rep-detail { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+.rep-vote-zone { }
+.rep-bar-bg { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.rep-bar-fill { height: 6px; background: #111; border-radius: 3px; transition: width .6s ease; }
+.rep-pct { font-size: 11px; color: #888; margin-bottom: 10px; }
+
+.btn-repechage {
+  width: 100%; padding: 12px; background: #fff; color: #111;
+  border: 1.5px solid #111; border-radius: 12px; font-size: 13px;
+  font-weight: 700; cursor: pointer; transition: all .2s;
+}
+.btn-repechage:hover { background: #111; color: #fff; }
+.btn-repechage:disabled { background: #f5f5f5; color: #aaa; border-color: #eee; cursor: not-allowed; }
+.btn-repechage.voted { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+
+/* ===== FORMULAIRES CREATION ===== */
+.btn-create {
+  width:100%; padding:13px; background:#fff; color:#111;
+  border:1.5px dashed #ccc; border-radius:12px; font-size:14px;
+  font-weight:700; cursor:pointer; transition:all .2s; margin-bottom:4px;
+}
+.btn-create:hover { border-color:#111; background:#f5f5f5; }
+
+.create-form {
+  background:#fafafa; border:1.5px solid #eee; border-radius:14px;
+  padding:16px; margin-bottom:4px;
+}
+.form-title { font-size:14px; font-weight:800; color:#111; margin-bottom:14px; }
+.form-group { margin-bottom:12px; }
+.form-label { font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px; }
+.form-input, .form-select {
+  width:100%; padding:10px 12px; border:1.5px solid #eee; border-radius:10px;
+  font-size:13px; color:#111; background:#fff; outline:none; transition:border-color .2s;
+}
+.form-input:focus, .form-select:focus { border-color:#111; }
+.btn-cancel {
+  flex:1; padding:11px; background:#fff; color:#888; border:1.5px solid #eee;
+  border-radius:10px; font-size:13px; font-weight:600; cursor:pointer;
+}
+.btn-confirm {
+  flex:2; padding:11px; background:#111; color:#fff; border:none;
+  border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; transition:background .2s;
+}
+.btn-confirm:hover { background:#333; }
+
+/* ===== VOTE EN COURS ===== */
+.vote-encours-card {
+  background:#fff; border:1.5px solid #eee; border-radius:14px;
+  padding:14px 16px; margin-bottom:10px;
+}
+.vec-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+.vec-name { font-size:14px; font-weight:800; color:#111; }
+.vec-raison { font-size:11px; color:#888; margin-top:3px; }
+.vec-timer { font-size:12px; font-weight:700; color:#e53935; text-align:right; white-space:nowrap; }
+.vec-pct { font-size:11px; color:#888; margin:6px 0 10px; }
+
+/* ===== REPÊCHÉ ===== */
+.repechage-ok-card {
+  background:#f0faf4; border:1.5px solid #a5d6a7; border-radius:14px;
+  padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:12px;
+}
+.rep-ok-badge {
+  font-size:11px; font-weight:700; color:#2e7d32; background:#c8e6c9;
+  padding:3px 10px; border-radius:99px; white-space:nowrap;
+}
+
+/* ===== HEADER PROFIL ===== */
+.profil-btn { display:flex; align-items:center; gap:8px; cursor:pointer; padding:4px 8px; border-radius:10px; border:1px solid #eee; transition:background .2s; }
+.profil-btn:hover { background:#f5f5f5; }
+.profil-avatar { width:32px; height:32px; background:#111; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.profil-info { }
+.profil-pseudo { font-size:12px; font-weight:700; color:#111; }
+.profil-pts { font-size:10px; color:#888; }
+
+/* ===== MODAL PROFIL ===== */
+.profil-modal {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  z-index:999; display:flex; align-items:flex-end; justify-content:center;
+}
+.profil-modal-card {
+  background:#fff; border-radius:20px 20px 0 0; padding:20px;
+  width:100%; max-width:480px; max-height:90vh; overflow-y:auto;
+}
+.pm-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.pm-avatar { width:52px; height:52px; background:#111; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.pm-pseudo { font-size:16px; font-weight:800; color:#111; }
+.pm-membre { font-size:12px; color:#888; margin-top:2px; }
+.pm-close { margin-left:auto; background:none; border:none; font-size:18px; color:#aaa; cursor:pointer; padding:4px; }
+.pm-stats { display:flex; gap:8px; margin-bottom:20px; }
+.pm-stat { flex:1; background:#f5f5f5; border-radius:12px; padding:12px; text-align:center; }
+.pm-stat-num { font-size:20px; font-weight:800; color:#111; }
+.pm-stat-label { font-size:10px; color:#888; margin-top:2px; }
+
+.avatar-picker { display:flex; gap:8px; flex-wrap:wrap; }
+.ap-option { width:40px; height:40px; border-radius:10px; background:#f5f5f5; border:2px solid transparent; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; transition:all .2s; }
+.ap-option:hover { border-color:#ccc; }
+.ap-option.selected { border-color:#111; background:#f0f0f0; }
+
+/* ===== PRONO MODERNE ===== */
+.prono-profil-card {
+  background:#111; border-radius:16px; padding:16px;
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
+}
+.ppc-left { display:flex; align-items:center; gap:12px; }
+.ppc-avatar { width:42px; height:42px; background:#333; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.ppc-pseudo { font-size:14px; font-weight:700; color:#fff; }
+.ppc-rank { font-size:11px; color:#888; margin-top:2px; }
+.ppc-pts { text-align:right; }
+.ppc-pts-num { font-size:26px; font-weight:800; color:#FFD700; }
+.ppc-pts-label { font-size:10px; color:#888; }
+
+.badges-row { display:flex; gap:8px; margin-bottom:16px; }
+.badge-item { width:38px; height:38px; background:#f5f5f5; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid transparent; }
+.badge-item.active { background:#fffde7; border-color:#FFD700; }
+.badge-item.locked { opacity:.3; filter:grayscale(1); }
+
+.prono-nav { display:flex; background:#f5f5f5; border-radius:12px; padding:4px; gap:2px; margin-bottom:16px; }
+.prono-nav-btn { flex:1; padding:8px 4px; background:none; border:none; font-size:12px; font-weight:600; color:#888; border-radius:9px; cursor:pointer; transition:all .2s; }
+.prono-nav-btn.active { background:#fff; color:#111; box-shadow:0 1px 3px rgba(0,0,0,.1); }
+
+.prono-week-banner {
+  background:#f8f8f8; border-radius:14px; padding:14px 16px;
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
+  border-left:4px solid #111;
+}
+.pwb-label { font-size:11px; color:#888; text-transform:uppercase; letter-spacing:.5px; }
+.pwb-title { font-size:16px; font-weight:800; color:#111; margin-top:2px; }
+.pwb-pts { background:#111; color:#FFD700; font-size:13px; font-weight:800; padding:6px 14px; border-radius:99px; }
+
+.prono-categorie { font-size:13px; font-weight:700; color:#555; margin-bottom:8px; }
+
+.prono-list { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+.prono-card {
+  background:#fff; border:1.5px solid #eee; border-radius:12px;
+  padding:11px 14px; cursor:pointer; transition:all .15s;
+  display:flex; align-items:center; gap:12px;
+}
+.prono-card:hover { border-color:#bbb; transform:translateX(2px); }
+.prono-card.selected { border-color:#111; background:#f8f8f8; transform:translateX(4px); }
+.prono-card.confirmed { border-color:#FFD700; background:#fffde7; cursor:default; transform:none; }
+.prono-card-name { flex:1; font-size:14px; font-weight:700; color:#111; }
+
+.prono-tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; }
+.prono-tag.favori { background:#fffde7; color:#b8860b; }
+.prono-tag.protege { background:#e8f5e9; color:#2e7d32; }
+.prono-tag.risque { background:#ffebee; color:#c62828; }
+
+.btn-prono-submit {
+  width:100%; padding:14px; background:#111; color:#fff; border:none;
+  border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all .2s;
+}
+.btn-prono-submit:hover { background:#333; }
+.btn-prono-submit:disabled { background:#eee; color:#aaa; cursor:not-allowed; }
+
+.prono-confirm {
+  background:#f0faf4; border:1.5px solid #a5d6a7; border-radius:14px;
+  padding:16px; margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.pc-icon { font-size:24px; color:#2e7d32; font-weight:800; }
+.pc-text { font-size:14px; font-weight:700; color:#2e7d32; }
+.pc-pts { font-size:11px; color:#888; }
+
+.prono-lb-av { font-size:18px; width:28px; text-align:center; }
+.prono-lb-name { flex:1; font-size:13px; font-weight:600; color:#111; }
+.prono-lb-pts { font-size:13px; font-weight:800; color:#111; }
+.prono-lb-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #f0f0f0; }
+.prono-lb-row:last-child { border-bottom:none; }
+.prono-header {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.prono-score-box {
+  flex: 1; background: #111; border-radius: 12px;
+  padding: 12px 8px; text-align: center;
+}
+.prono-score-num { font-size: 20px; font-weight: 800; color: #FFD700; }
+.prono-score-label { font-size: 10px; color: #666; margin-top: 3px; }
+
+.prono-info-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: #fffde7; border: 1px solid #ffe082;
+  border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+}
+.pib-icon { font-size: 18px; flex-shrink: 0; }
+.pib-text { font-size: 12px; color: #888; line-height: 1.5; }
+
+.prono-list {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+}
+.prono-card {
+  background: #fff; border: 1.5px solid #eee; border-radius: 12px;
+  padding: 12px 16px; cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 12px;
+}
+.prono-card:hover { border-color: #ccc; }
+.prono-card.selected { border-color: #111; background: #f0f0f0; }
+.prono-card.confirmed { border-color: #FFD700; background: #fffde7; cursor: default; }
+.prono-card-name { flex: 1; font-size: 14px; font-weight: 700; color: #111; }
+.prono-cote {
+  font-size: 10px; font-weight: 700; color: #512da8;
+  background: #ede7f6; padding: 2px 8px; border-radius: 99px;
+}
+.prono-cote:empty { display: none; }
+
+.prono-confirm {
+  background: #f0faf4; border: 1.5px solid #a5d6a7;
+  border-radius: 14px; padding: 14px 16px; margin-top: 8px; text-align: center;
+}
+.pc-text { font-size: 14px; font-weight: 700; color: #2e7d32; margin-bottom: 4px; }
+.pc-pts { font-size: 11px; color: #888; }
+
+.prono-lb { }
+.prono-lb-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+}
+.prono-lb-row:last-child { border-bottom: none; }
+.prono-lb-name { flex: 1; font-size: 13px; font-weight: 600; color: #111; }
+.prono-lb-pts { font-size: 13px; font-weight: 800; color: #111; }
+
+/* ===== GROUPES PRONO ===== */
+.groupe-actions { display:flex; gap:10px; margin-bottom:4px; }
+.btn-groupe-action {
+  flex:1; background:#fff; border:1.5px solid #eee; border-radius:14px;
+  padding:14px 12px; cursor:pointer; display:flex; align-items:center; gap:10px;
+  text-align:left; transition:all .2s;
+}
+.btn-groupe-action:hover { border-color:#111; background:#f5f5f5; }
+.bga-icon {
+  width:36px; height:36px; background:#111; color:#FFD700;
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:800; flex-shrink:0;
+}
+.bga-title { font-size:13px; font-weight:700; color:#111; }
+.bga-sub { font-size:11px; color:#aaa; margin-top:2px; }
+
+.groupe-card {
+  background:#fff; border:1.5px solid #eee; border-radius:16px;
+  padding:16px; margin-bottom:10px; cursor:pointer; transition:border-color .2s;
+}
+.groupe-card:hover { border-color:#ccc; }
+.gc-header { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.gc-avatar {
+  width:42px; height:42px; background:#111; color:#FFD700;
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:14px; flex-shrink:0;
+}
+.gc-info { flex:1; }
+.gc-nom { font-size:14px; font-weight:800; color:#111; }
+.gc-membres { font-size:11px; color:#aaa; margin-top:2px; }
+.gc-chevron { font-size:20px; color:#ccc; }
+
+.gc-classement { background:#f9f9f9; border-radius:10px; padding:10px 12px; }
+.gc-rank-row { display:flex; align-items:center; gap:10px; padding:5px 0; border-bottom:1px solid #f0f0f0; }
+.gc-rank-row:last-child { border-bottom:none; }
+.gc-pos { width:20px; text-align:center; font-size:13px; font-weight:800; }
+.gc-pseudo { flex:1; font-size:13px; color:#111; font-weight:500; }
+.gc-pts { font-size:13px; font-weight:800; color:#111; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: #111; color: #fff; padding: 12px 22px; border-radius: 99px;
+  font-weight: 700; font-size: 14px; transition: transform .3s ease; z-index: 9999; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ===== INSCRIPTION / CONNEXION ===== -->
+<div id="auth-screen">
+
+  <!-- PAGE CONNEXION -->
+  <div id="page-login" class="auth-page active">
+    <div class="auth-logo">
+      <div class="auth-logo-sq"><span>N</span></div>
+      <div class="auth-logo-name">Team Chienneté</div>
+      <div class="auth-logo-sub">L'appli officielle des fans</div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-title">Connexion</div>
+      <div class="auth-subtitle-main">Connecte-toi pour voter, pronostiquer et rejoindre des groupes</div>
+
+      <button class="btn-social google" onclick="connexionSociale('Google')">
+        <div class="social-icon-g">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/></svg>
+        </div>
+        Continuer avec Google
+      </button>
+
+      <button class="btn-social apple" onclick="connexionSociale('Apple')">
+        <div class="social-icon-a">
+          <svg width="18" height="18" viewBox="0 0 814 1000"><path fill="#fff" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-155.5-127.5c-42.8-77.2-78.5-196.8-78.5-311.5 0-202.2 131.8-308.9 261.4-308.9 70.1 0 128.4 45.2 172.6 45.2 42.1 0 108.2-47.8 190.5-47.8zm-78-134.5c29.9-36.5 50.7-87.5 50.7-138.5 0-7.1-.6-14.3-1.9-20.1-47.2 1.9-103.3 31.8-136.6 72.7-26.2 31.2-51.5 82.2-51.5 133.9 0 7.7 1.3 15.4 1.9 17.9 3.2.6 8.4 1.3 13.6 1.3 42.1 0 95.5-28.1 123.8-67.2z"/></svg>
+        </div>
+        Continuer avec Apple
+      </button>
+
+      <div class="auth-conditions">
+        En continuant tu acceptes nos <span class="rgpd-link">Conditions d'utilisation</span> et notre <span class="rgpd-link">Politique de confidentialité</span>
+      </div>
+    </div>
+
+    <!-- Bouton invité -->
+    <button class="btn-invite" onclick="connexionInvite()">
+      Continuer sans compte →
+    </button>
+  </div>
+
+  <!-- PAGE AVATAR après connexion -->
+  <div id="page-avatar" class="auth-page">
+    <div class="auth-logo">
+      <div class="auth-logo-sq"><span>N</span></div>
+      <div class="auth-logo-name">Choisis ton avatar</div>
+      <div class="auth-logo-sub">Dernière étape !</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-title" id="welcome-name">Bienvenue !</div>
+      <div class="auth-subtitle-main">Choisis l'avatar qui te représente</div>
+      <div class="avatar-picker" style="justify-content:center;gap:12px;margin:20px 0;flex-wrap:wrap">
+        <div class="ap-option lg" onclick="selectAvatar(this, '🐺')">🐺</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🦁')">🦁</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🐸')">🐸</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🔥')">🔥</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '⭐')">⭐</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '💎')">💎</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '👑')">👑</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🎯')">🎯</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🏆')">🏆</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🦅')">🦅</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🐉')">🐉</div>
+        <div class="ap-option lg" onclick="selectAvatar(this, '🎭')">🎭</div>
+      </div>
+      <div class="auth-pseudo-group">
+        <label class="form-label">Ton pseudo</label>
+        <input type="text" class="form-input" id="input-pseudo-auth" placeholder="Ex: FanNasdas66" maxlength="20" oninput="verifierPseudo(this.value)" autocomplete="off">
+        <div id="pseudo-status" style="font-size:12px;margin-top:6px;font-weight:600;min-height:18px"></div>
+      </div>
+      <div id="pseudo-suggestions" style="display:none;margin-top:10px">
+        <div style="font-size:11px;color:#888;margin-bottom:6px">Pseudos disponibles :</div>
+        <div id="suggestions-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+      <div style="display:none">
+      </div>
+      <button class="btn-launch-modern" id="btn-launch" onclick="lancerAppli()" disabled style="opacity:0.5">
+          Entrer dans la Team
+          <span class="btn-arrow">→</span>
+        </button>
+    </div>
+  </div>
+
+</div>
+
+  <!-- PAGE INFOS PERSONNELLES -->
+  <div id="page-infos" class="auth-page">
+    <div class="auth-logo">
+      <div class="auth-logo-sq"><span>N</span></div>
+      <div class="auth-logo-name">Ton profil</div>
+      <div class="auth-logo-sub">Quelques infos sur toi</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-title">Informations personnelles</div>
+      <div class="auth-subtitle-main">Ces infos sont privées et ne seront pas visibles par les autres</div>
+
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div style="flex:1">
+          <label class="form-label">Prénom</label>
+          <input type="text" class="form-input" id="input-prenom" placeholder="Ex: Bilal" maxlength="30">
+        </div>
+        <div style="flex:1">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" id="input-nom" placeholder="Ex: Dupont" maxlength="30">
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label class="form-label">Âge</label>
+        <input type="number" class="form-input" id="input-age" placeholder="Ex: 22" min="13" max="99">
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label class="form-label">Pays</label>
+        <select class="form-input" id="input-pays" style="cursor:pointer">
+          <option value="">Sélectionne ton pays</option>
+          <option value="France">🇫🇷 France</option>
+          <option value="Belgique">🇧🇪 Belgique</option>
+          <option value="Suisse">🇨🇭 Suisse</option>
+          <option value="Canada">🇨🇦 Canada</option>
+          <option value="Maroc">🇲🇦 Maroc</option>
+          <option value="Algérie">🇩🇿 Algérie</option>
+          <option value="Tunisie">🇹🇳 Tunisie</option>
+          <option value="Sénégal">🇸🇳 Sénégal</option>
+          <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+          <option value="Autre">🌍 Autre</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label class="form-label">Ville</label>
+        <input type="text" class="form-input" id="input-ville" placeholder="Ex: Paris, Lyon, Perpignan..." maxlength="50">
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label class="form-label">Depuis combien de temps tu suis Nasdas ?</label>
+        <select class="form-input" id="input-depuis" style="cursor:pointer">
+          <option value="">Sélectionne une durée</option>
+          <option value="1an">⭐ 1 an</option>
+          <option value="2ans">⭐⭐ 2 ans</option>
+          <option value="3ans">⭐⭐⭐ 3 ans</option>
+          <option value="4ans">⭐⭐⭐⭐ 4 ans</option>
+          <option value="5ans">⭐⭐⭐⭐⭐ 5 ans</option>
+          <option value="5ans+">🐺 5 ans et plus — Fan de la première heure !</option>
+        </select>
+      </div>
+
+      <button class="btn-launch-modern" onclick="validerInfos()">
+        Continuer <span class="btn-arrow">→</span>
+      </button>
+      <button onclick="showAuthPage('page-welcome')" style="width:100%;padding:12px;background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;margin-top:8px">
+        Passer cette étape →
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGE BIENVENUE -->
+  <div id="page-welcome" class="auth-page" style="max-width:none;padding:0;margin:0">
+    <div class="welcome-screen">
+      <div class="welcome-confetti" id="confetti-zone"></div>
+      <div class="welcome-content">
+        <div class="welcome-logo">
+          <div class="auth-logo-sq" style="width:90px;height:90px;border-radius:24px;margin:0 auto">
+            <span style="font-size:40px">N</span>
+          </div>
+        </div>
+        <div class="welcome-emoji" id="welcome-avatar-big">🐺</div>
+        <div class="welcome-title">Bienvenue dans la<br>Team Chienneté !</div>
+        <div class="welcome-pseudo" id="welcome-pseudo-big">Fan</div>
+        <div class="welcome-sub">Tu fais maintenant partie des fans officiels 🐺</div>
+        <div class="welcome-badges">
+          <div class="wb-item">
+            <div class="wb-icon">🗳️</div>
+            <div class="wb-text">Vote chaque jour</div>
+          </div>
+          <div class="wb-item">
+            <div class="wb-icon">🎯</div>
+            <div class="wb-text">Fais tes pronos</div>
+          </div>
+          <div class="wb-item">
+            <div class="wb-icon">👥</div>
+            <div class="wb-text">Défie tes amis</div>
+          </div>
+        </div>
+        <button class="btn-welcome-start" onclick="demarrerAppli()">
+          C'est parti ! →
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fin auth-screen -->
+
+<!-- ===== SPLASH ===== -->
+<div id="splash">
+  <div class="splash-logo"><span>N</span></div>
+  <div class="splash-title">Team Chienneté</div>
+  <div class="splash-sub">L'appli officielle des fans</div>
+  <div class="splash-stats">
+    <div class="stat"><div class="stat-num">9.6M</div><div class="stat-label">Spectateurs</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Membres actifs</div></div>
+  </div>
+  <button class="btn-enter" onclick="entrerApp()">Entrer dans la Team →</button>
+  <div class="splash-footer">Contenu non officiel · Fan project</div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+  <header>
+    <div class="logo-row">
+      <div class="logo-sq"><span>N</span></div>
+      <div>
+        <div class="logo-name">Team Chienneté</div>
+        <div class="logo-sub">Perpignan · Saint-Jacques</div>
+      </div>
+    </div>
+    <div class="profil-btn" onclick="ouvrirProfil()">
+      <div class="profil-avatar" id="header-avatar">?</div>
+      <div class="profil-info">
+        <div class="profil-pseudo" id="header-pseudo">Mon profil</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MODAL PROFIL -->
+  <div class="profil-modal" id="profil-modal" style="display:none">
+    <div class="profil-modal-card">
+      <div class="pm-header">
+        <div class="pm-avatar" id="pm-avatar">?</div>
+        <div>
+          <div class="pm-pseudo" id="pm-pseudo">Invité</div>
+          <div class="pm-membre">Fan de la Team Chienneté</div>
+        </div>
+        <button class="pm-close" onclick="fermerProfil()">✕</button>
+      </div>
+
+      <div class="pm-stats">
+        <div class="pm-stat">
+          <div class="pm-stat-num" id="pm-pts">0</div>
+          <div class="pm-stat-label">pts prono</div>
+        </div>
+        <div class="pm-stat">
+          <div class="pm-stat-num" id="pm-pronos">0</div>
+          <div class="pm-stat-label">pronos</div>
+        </div>
+        <div class="pm-stat">
+          <div class="pm-stat-num" id="pm-reussis">0%</div>
+          <div class="pm-stat-label">réussite</div>
+        </div>
+      </div>
+
+      <div id="profil-form">
+        <div class="form-group">
+          <label class="form-label">Ton pseudo</label>
+          <input type="text" class="form-input" id="input-pseudo" placeholder="Ex: FanNasdas66" maxlength="20">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Choisis ton avatar</label>
+          <div class="avatar-picker">
+            <div class="ap-option" onclick="selectAvatar(this, '🐺')">🐺</div>
+            <div class="ap-option" onclick="selectAvatar(this, '🦁')">🦁</div>
+            <div class="ap-option" onclick="selectAvatar(this, '🐸')">🐸</div>
+            <div class="ap-option" onclick="selectAvatar(this, '🔥')">🔥</div>
+            <div class="ap-option" onclick="selectAvatar(this, '⭐')">⭐</div>
+            <div class="ap-option" onclick="selectAvatar(this, '💎')">💎</div>
+            <div class="ap-option" onclick="selectAvatar(this, '👑')">👑</div>
+            <div class="ap-option" onclick="selectAvatar(this, '🎯')">🎯</div>
+          </div>
+        </div>
+        <button class="btn-confirm" style="width:100%;padding:13px;border-radius:12px" onclick="sauvegarderProfil()">
+          Sauvegarder mon profil
+        </button>
+        <button onclick="seDeconnecter()" style="width:100%;padding:12px;border-radius:12px;background:none;border:1.5px solid #eee;color:#555;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">🚪 Se déconnecter</button>
+        <button onclick="supprimerCompte()" style="width:100%;padding:12px;border-radius:12px;background:none;border:1.5px solid #ffcccc;color:#c62828;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">🗑️ Supprimer mon compte</button>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="active" onclick="showTab('team', this)">Team</button>
+    <button onclick="showTab('vote', this)">Vote</button>
+    <button onclick="showTab('classement', this)">Top</button>
+    <button onclick="showTab('resultats', this)">Résultats</button>
+    <button onclick="showTab('eliminations', this)">Élims</button>
+    <button onclick="showTab('prono', this)">Prono</button>
+  </nav>
+
+    <!-- ===== TEAM ===== -->
+  <div class="section active" id="team">
+    <div class="section-label">Les membres de la team</div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#ede7f6;color:#512da8">SA</div>
+        <div>
+          <div class="profile-name">Samos</div>
+          <div class="profile-role">Rappeur · Membre depuis S01</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Sortir son premier EP et percer dans la musique urbaine. Nasdas finance son studio d'enregistrement à Perpignan.</div>
+  
+    <!-- PANEL GROUPES -->
+    <div class="vote-panel" id="prono-panel-groupes">
+
+      <!-- Créer ou rejoindre -->
+      <div class="groupe-actions">
+        <button class="btn-groupe-action" onclick="toggleForm('form-create-groupe')">
+          <span class="bga-icon">+</span>
+          <div>
+            <div class="bga-title">Créer un groupe</div>
+            <div class="bga-sub">Invite tes amis à pronostiquer</div>
+          </div>
+        </button>
+        <button class="btn-groupe-action" onclick="toggleForm('form-join-groupe')">
+          <span class="bga-icon">#</span>
+          <div>
+            <div class="bga-title">Rejoindre un groupe</div>
+            <div class="bga-sub">Entre le code d'invitation</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Formulaire créer -->
+      <div class="create-form" id="form-create-groupe" style="display:none">
+        <div class="form-title">Créer un groupe</div>
+        <div class="form-group">
+          <label class="form-label">Nom du groupe</label>
+          <input type="text" class="form-input" id="groupe-nom" placeholder="Ex: Les Chiens du Nord">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-create-groupe')">Annuler</button>
+          <button class="btn-confirm" onclick="creerGroupe()">Créer</button>
+        </div>
+      </div>
+
+      <!-- Formulaire rejoindre -->
+      <div class="create-form" id="form-join-groupe" style="display:none">
+        <div class="form-title">Rejoindre un groupe</div>
+        <div class="form-group">
+          <label class="form-label">Code d'invitation</label>
+          <input type="text" class="form-input" id="groupe-code" placeholder="Ex: NAS-2026" maxlength="10" style="text-transform:uppercase;letter-spacing:2px">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-join-groupe')">Annuler</button>
+          <button class="btn-confirm" onclick="rejoindreGroupe()">Rejoindre</button>
+        </div>
+      </div>
+
+      <!-- Mes groupes -->
+      <div class="section-label" style="margin-top:16px">Mes groupes</div>
+      <div id="mes-groupes">
+
+        <div class="groupe-card" onclick="ouvrirGroupe('les-chiens-66')">
+          <div class="gc-header">
+            <div class="gc-avatar">LC</div>
+            <div class="gc-info">
+              <div class="gc-nom">Les Chiens 66</div>
+              <div class="gc-membres">5 membres · Code : NAS-7731</div>
+            </div>
+            <div class="gc-chevron">›</div>
+          </div>
+          <div class="gc-classement">
+            <div class="gc-rank-row">
+              <span class="gc-pos r1">1</span>
+              <span class="gc-pseudo">TounsiFan</span>
+              <span class="gc-pts">80 pts</span>
+            </div>
+            <div class="gc-rank-row">
+              <span class="gc-pos r2">2</span>
+              <span class="gc-pseudo">Moi</span>
+              <span class="gc-pts">60 pts</span>
+            </div>
+            <div class="gc-rank-row">
+              <span class="gc-pos r3">3</span>
+              <span class="gc-pseudo">SamosLover</span>
+              <span class="gc-pts">50 pts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="groupe-card" onclick="ouvrirGroupe('perpignan-city')">
+          <div class="gc-header">
+            <div class="gc-avatar">PC</div>
+            <div class="gc-info">
+              <div class="gc-nom">Perpignan City</div>
+              <div class="gc-membres">8 membres · Code : NAS-4412</div>
+            </div>
+            <div class="gc-chevron">›</div>
+          </div>
+          <div class="gc-classement">
+            <div class="gc-rank-row">
+              <span class="gc-pos r1">1</span>
+              <span class="gc-pseudo">Moi</span>
+              <span class="gc-pts">90 pts</span>
+            </div>
+            <div class="gc-rank-row">
+              <span class="gc-pos r2">2</span>
+              <span class="gc-pseudo">ChiennetéBoy</span>
+              <span class="gc-pts">70 pts</span>
+            </div>
+            <div class="gc-rank-row">
+              <span class="gc-pos r3">3</span>
+              <span class="gc-pseudo">NasdasN1</span>
+              <span class="gc-pts">60 pts</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#e8f5e9;color:#2e7d32">TO</div>
+        <div>
+          <div class="profile-name">Tounsi</div>
+          <div class="profile-role">Ami de toujours · Depuis S01</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Obtenir son permis de conduire pour décrocher un emploi de chauffeur. Les cours sont financés par Nasdas.</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#fff3e0;color:#e65100">AS</div>
+        <div>
+          <div class="profile-name">Assya</div>
+          <div class="profile-role">Membre · Depuis S03</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Suivre une formation en esthétique pour ouvrir son propre salon dans le quartier Saint-Jacques.</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#fce4ec;color:#c62828">4B</div>
+        <div>
+          <div class="profile-name">4BDV</div>
+          <div class="profile-role">Membre · Depuis S08</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Régulariser sa situation administrative et trouver un premier emploi stable en France.</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#e3f2fd;color:#1565c0">LE</div>
+        <div>
+          <div class="profile-name">Leyna</div>
+          <div class="profile-role">Membre · Depuis S05</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Lancer sa propre marque de vêtements streetwear inspirée du quartier et de la culture chienneté.</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+        <div>
+          <div class="profile-name">Mouna</div>
+          <div class="profile-role">Membre · Depuis S06</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Ouvrir une pâtisserie orientale dans le quartier et proposer des cours de cuisine aux jeunes.</div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="profile-av" style="background:#efebe9;color:#4e342e">CA</div>
+        <div>
+          <div class="profile-name">Cappuccino</div>
+          <div class="profile-role">Nouveau · Depuis S10</div>
+        </div>
+      </div>
+      <div class="proj-label">Projet de vie</div>
+      <div class="proj-text">Devenir coach sportif diplômé et créer une salle de sport accessible dans le quartier.</div>
+    </div>
+  </div>
+
+  <!-- ===== VOTE ===== -->
+  <div class="section" id="vote">
+
+    <div class="vote-tabs">
+      <div class="vote-tab active" onclick="showVotePanel('divertissement', this)">
+        <span class="vote-tab-icon">🎭</span>Divertissement
+      </div>
+      <div class="vote-tab" onclick="showVotePanel('projet', this)">
+        <span class="vote-tab-icon">🚀</span>Projet de vie
+      </div>
+    </div>
+
+    <div class="result-info" id="result-info">
+      <div class="result-icon">⚠</div>
+      <div>
+        <div class="result-title">Résultats dimanche 23h59</div>
+        <div class="result-desc" id="result-desc">Votes cumulés toute la semaine</div>
+      </div>
+    </div>
+
+    <!-- PANEL DIVERTISSEMENT -->
+    <div class="vote-panel active" id="panel-divertissement">
+      <div class="vote-banner">
+        <div>
+          <span class="week-pill">Cette semaine</span>
+          <h2>Qui a le plus diverti ?</h2>
+          <p>Humour · Moments forts · Réactions</p>
+        </div>
+        <div class="timer-box">
+          <span class="timer-num" id="countdown-div">--</span>
+          <span class="timer-lab">restant</span>
+        </div>
+      </div>
+
+      <div class="section-label">1 vote par jour</div>
+
+      <div class="members-list" id="list-div">
+        <div class="member-card" id="card-div-samos" data-id="div-samos" data-name="Samos" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="member-info">
+            <div class="member-name">Samos</div>
+            <div class="member-projet">Ses punchlines & clashs</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-tounsi" data-id="div-tounsi" data-name="Tounsi" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="member-info">
+            <div class="member-name">Tounsi</div>
+            <div class="member-projet">Ses réactions spontanées</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-assya" data-id="div-assya" data-name="Assya" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="member-info">
+            <div class="member-name">Assya</div>
+            <div class="member-projet">Ses moments drôles</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-4bdv" data-id="div-4bdv" data-name="4BDV" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="member-info">
+            <div class="member-name">4BDV</div>
+            <div class="member-projet">Ses surprises & découvertes</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-leyna" data-id="div-leyna" data-name="Leyna" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="member-info">
+            <div class="member-name">Leyna</div>
+            <div class="member-projet">Son énergie & bonne humeur</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-mouna" data-id="div-mouna" data-name="Mouna" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="member-info">
+            <div class="member-name">Mouna</div>
+            <div class="member-projet">Ses tacles & réponses</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-div-cappuccino" data-id="div-cappuccino" data-name="Cappuccino" onclick="selectMember(this,'div')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="member-info">
+            <div class="member-name">Cappuccino</div>
+            <div class="member-projet">Ses défis & exploits</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-vote" id="btn-div" onclick="validerVote('div')" disabled>
+        Sélectionne un membre pour voter
+      </button>
+      <div class="vote-confirm" id="confirm-div" style="display:none">
+        <div class="confirm-text" id="confirm-text-div"></div>
+        <div class="confirm-timer">Prochain vote dans <span id="next-vote-div"></span></div>
+      </div>
+    </div>
+
+    <!-- PANEL PROJET -->
+    <div class="vote-panel" id="panel-projet">
+      <div class="vote-banner">
+        <div>
+          <span class="week-pill">Cette semaine</span>
+          <h2>Qui a le mieux avancé ?</h2>
+          <p>Efforts · Étapes franchies · Motivation</p>
+        </div>
+        <div class="timer-box">
+          <span class="timer-num" id="countdown-proj">--</span>
+          <span class="timer-lab">restant</span>
+        </div>
+      </div>
+
+      <div class="section-label">1 vote par jour</div>
+
+      <div class="lock-banner" id="proj-locked" style="display:none">
+        <div class="lock-icon">🔒</div>
+        <div>
+          <div class="lock-title">Vote fermé cette semaine</div>
+          <div class="lock-desc">Le vote projet de vie ouvre chaque samedi à 00h00</div>
+        </div>
+      </div>
+      <div class="members-list" id="list-proj">
+        <div class="member-card" id="card-proj-samos" data-id="proj-samos" data-name="Samos" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="member-info">
+            <div class="member-name">Samos</div>
+            <div class="member-projet">EP en cours d'enregistrement</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-tounsi" data-id="proj-tounsi" data-name="Tounsi" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="member-info">
+            <div class="member-name">Tounsi</div>
+            <div class="member-projet">Examen du permis la semaine prochaine</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-assya" data-id="proj-assya" data-name="Assya" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="member-info">
+            <div class="member-name">Assya</div>
+            <div class="member-projet">Inscrite en formation cette semaine</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-4bdv" data-id="proj-4bdv" data-name="4BDV" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="member-info">
+            <div class="member-name">4BDV</div>
+            <div class="member-projet">Premier entretien d'embauche</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-leyna" data-id="proj-leyna" data-name="Leyna" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="member-info">
+            <div class="member-name">Leyna</div>
+            <div class="member-projet">Premiers prototypes créés</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-mouna" data-id="proj-mouna" data-name="Mouna" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="member-info">
+            <div class="member-name">Mouna</div>
+            <div class="member-projet">Recettes testées & validées</div>
+          </div>
+        </div>
+        <div class="member-card" id="card-proj-cappuccino" data-id="proj-cappuccino" data-name="Cappuccino" onclick="selectMember(this,'proj')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="member-info">
+            <div class="member-name">Cappuccino</div>
+            <div class="member-projet">Diplôme coach en préparation</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-vote" id="btn-proj" onclick="validerVote('proj')" disabled>
+        Sélectionne un membre pour voter
+      </button>
+      <div class="vote-confirm" id="confirm-proj" style="display:none">
+        <div class="confirm-text" id="confirm-text-proj"></div>
+        <div class="confirm-timer">Prochain vote dans <span id="next-vote-proj"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CLASSEMENT ===== -->
+  <div class="section" id="classement">
+
+    <!-- Info remise à zéro -->
+    <div class="reset-banner">
+      <div class="reset-left">
+        <div class="reset-title">Classement de mars 2026</div>
+        <div class="reset-sub">Remise à zéro le 1er avril</div>
+      </div>
+      <div class="reset-timer" id="reset-timer">--</div>
+    </div>
+
+    <!-- Podium top 3 -->
+    <div class="podium">
+      <div class="podium-item second">
+        <div class="podium-av" style="background:#e8f5e9;color:#2e7d32">TO</div>
+        <div class="podium-name">Tounsi</div>
+        <div class="podium-pts">3 540 pts</div>
+        <div class="podium-block p2">2</div>
+      </div>
+      <div class="podium-item first">
+        <div class="podium-crown">👑</div>
+        <div class="podium-av" style="background:#ede7f6;color:#512da8">SA</div>
+        <div class="podium-name">Samos</div>
+        <div class="podium-pts">4 820 pts</div>
+        <div class="podium-block p1">1</div>
+      </div>
+      <div class="podium-item third">
+        <div class="podium-av" style="background:#fff3e0;color:#e65100">AS</div>
+        <div class="podium-name">Assya</div>
+        <div class="podium-pts">3 210 pts</div>
+        <div class="podium-block p3">3</div>
+      </div>
+    </div>
+
+    <!-- Classement complet -->
+    <div class="section-label" style="margin-top:16px">Classement complet du mois</div>
+
+    <div class="lb-row">
+      <div class="lb-rank r1">1</div>
+      <div class="lb-av" style="background:#ede7f6;color:#512da8">SA</div>
+      <div class="lb-info">
+        <div class="lb-name">Samos</div>
+        <div class="lb-detail">🎭 Divert. · 🚀 Projet</div>
+      </div>
+      <div>
+        <div class="lb-pts">4 820 pts</div>
+        <div class="lb-trend up">▲ +320 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank r2">2</div>
+      <div class="lb-av" style="background:#e8f5e9;color:#2e7d32">TO</div>
+      <div class="lb-info">
+        <div class="lb-name">Tounsi</div>
+        <div class="lb-detail">🚀 Projet · Permis réussi !</div>
+      </div>
+      <div>
+        <div class="lb-pts">3 540 pts</div>
+        <div class="lb-trend up">▲ +280 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank r3">3</div>
+      <div class="lb-av" style="background:#fff3e0;color:#e65100">AS</div>
+      <div class="lb-info">
+        <div class="lb-name">Assya</div>
+        <div class="lb-detail">En progression +12%</div>
+      </div>
+      <div>
+        <div class="lb-pts">3 210 pts</div>
+        <div class="lb-trend up">▲ +210 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">4</div>
+      <div class="lb-av" style="background:#e3f2fd;color:#1565c0">LE</div>
+      <div class="lb-info">
+        <div class="lb-name">Leyna</div>
+        <div class="lb-detail">Projet lancé cette semaine</div>
+      </div>
+      <div>
+        <div class="lb-pts">1 540 pts</div>
+        <div class="lb-trend up">▲ +150 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">5</div>
+      <div class="lb-av" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+      <div class="lb-info">
+        <div class="lb-name">Mouna</div>
+        <div class="lb-detail">En progression constante</div>
+      </div>
+      <div>
+        <div class="lb-pts">980 pts</div>
+        <div class="lb-trend down">▼ -20 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">6</div>
+      <div class="lb-av" style="background:#fce4ec;color:#c62828">4B</div>
+      <div class="lb-info">
+        <div class="lb-name">4BDV</div>
+        <div class="lb-detail">Premier entretien réussi !</div>
+      </div>
+      <div>
+        <div class="lb-pts">640 pts</div>
+        <div class="lb-trend up">▲ +90 cette sem.</div>
+      </div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">7</div>
+      <div class="lb-av" style="background:#efebe9;color:#4e342e">CA</div>
+      <div class="lb-info">
+        <div class="lb-name">Cappuccino</div>
+        <div class="lb-detail">Arrivée récente</div>
+      </div>
+      <div>
+        <div class="lb-pts">210 pts</div>
+        <div class="lb-trend up">▲ +50 cette sem.</div>
+      </div>
+    </div>
+
+    <!-- Note remise à zéro -->
+    <div class="reset-note">
+      Les points sont remis à zéro le 1er de chaque mois. Chaque semaine compte !
+    </div>
+  </div>
+
+
+    <!-- ===== RÉSULTATS ===== -->
+  <div class="section" id="resultats">
+
+    <div class="resultats-header">
+      <div class="resultats-title">Palmarès de la saison</div>
+      <div class="resultats-sub">Vainqueurs semaine par semaine</div>
+    </div>
+
+    <div class="resultats-legend">
+      <span class="legend-item"><span class="legend-dot div"></span>Divertissement</span>
+      <span class="legend-item"><span class="legend-dot proj"></span>Projet de vie</span>
+    </div>
+
+    <div class="resultats-list">
+
+      <div class="result-week-card current">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine en cours</div>
+          <div class="rwc-dates">24–30 mars 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <span class="rwc-name">En attente...</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <span class="rwc-name">En attente...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-week-card">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine 12</div>
+          <div class="rwc-dates">17–23 mars 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <div class="rwc-av" style="background:#ede7f6;color:#512da8">SA</div>
+            <span class="rwc-name">Samos</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <div class="rwc-av" style="background:#e8f5e9;color:#2e7d32">TO</div>
+            <span class="rwc-name">Tounsi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-week-card">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine 11</div>
+          <div class="rwc-dates">10–16 mars 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <div class="rwc-av" style="background:#ede7f6;color:#512da8">SA</div>
+            <span class="rwc-name">Samos</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <div class="rwc-av" style="background:#fce4ec;color:#c62828">4B</div>
+            <span class="rwc-name">4BDV</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-week-card">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine 10</div>
+          <div class="rwc-dates">3–9 mars 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <div class="rwc-av" style="background:#efebe9;color:#4e342e">CA</div>
+            <span class="rwc-name">Cappuccino</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <div class="rwc-av" style="background:#fff3e0;color:#e65100">AS</div>
+            <span class="rwc-name">Assya</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-week-card">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine 9</div>
+          <div class="rwc-dates">24 fév–2 mars 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <div class="rwc-av" style="background:#ede7f6;color:#512da8">SA</div>
+            <span class="rwc-name">Samos</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <div class="rwc-av" style="background:#e3f2fd;color:#1565c0">LE</div>
+            <span class="rwc-name">Leyna</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-week-card">
+        <div class="rwc-week">
+          <div class="rwc-label">Semaine 8</div>
+          <div class="rwc-dates">17–23 fév 2026</div>
+        </div>
+        <div class="rwc-winners">
+          <div class="rwc-winner div">
+            <span class="rwc-icon">🎭</span>
+            <div class="rwc-av" style="background:#e8f5e9;color:#2e7d32">TO</div>
+            <span class="rwc-name">Tounsi</span>
+          </div>
+          <div class="rwc-winner proj">
+            <span class="rwc-icon">🚀</span>
+            <div class="rwc-av" style="background:#ede7f6;color:#512da8">SA</div>
+            <span class="rwc-name">Samos</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- ===== ELIMINATIONS ===== -->
+  <div class="section" id="eliminations">
+
+    <div class="vote-tabs">
+      <div class="vote-tab active" onclick="showElimPanel('elim', this)">
+        <span class="vote-tab-icon">❌</span>Éliminés
+      </div>
+      <div class="vote-tab" onclick="showElimPanel('repechage', this)">
+        <span class="vote-tab-icon">🔄</span>Repêchage
+      </div>
+    </div>
+
+    <!-- PANEL ÉLIMINATIONS -->
+    <div class="vote-panel active" id="panel-elim">
+
+      <!-- Bouton créer vote élimination -->
+      <button class="btn-create" onclick="toggleForm('form-elim')">
+        + Créer un vote d'élimination
+      </button>
+
+      <!-- Formulaire création -->
+      <div class="create-form" id="form-elim" style="display:none">
+        <div class="form-title">Nouveau vote d'élimination</div>
+        <div class="form-group">
+          <label class="form-label">Membre à éliminer</label>
+          <select class="form-select" id="elim-membre">
+            <option value="">Sélectionner un membre</option>
+            <option>Samos</option>
+            <option>Tounsi</option>
+            <option>Assya</option>
+            <option>4BDV</option>
+            <option>Leyna</option>
+            <option>Mouna</option>
+            <option>Cappuccino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date de fin du vote</label>
+          <input type="datetime-local" class="form-input" id="elim-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Raison de l'élimination</label>
+          <input type="text" class="form-input" id="elim-raison" placeholder="Ex: Moins de 5% des votes...">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-elim')">Annuler</button>
+          <button class="btn-confirm" onclick="creerElim()">Créer le vote</button>
+        </div>
+      </div>
+
+      <!-- Vote en cours -->
+      <div class="section-label" style="margin-top:16px">Vote en cours</div>
+      <div id="elim-votes-encours">
+        <div class="vote-encours-card">
+          <div class="vec-header">
+            <div>
+              <div class="vec-name">Cappuccino</div>
+              <div class="vec-raison">Manque d'implication dans le projet</div>
+            </div>
+            <div class="vec-timer" id="vec-timer-1">--</div>
+          </div>
+          <div class="rep-bar-bg"><div class="rep-bar-fill" style="width:34%"></div></div>
+          <div class="vec-pct">34% pour l'élimination · 66% contre</div>
+          <button class="btn-repechage" onclick="voterElim(this)">Voter pour l'éliminer</button>
+        </div>
+      </div>
+
+      <!-- Membres éliminés -->
+      <div class="section-label" style="margin-top:20px">Membres éliminés</div>
+      <div id="elim-liste">
+        <div class="elim-card">
+          <div class="elim-av">KR</div>
+          <div style="flex:1">
+            <div class="elim-name">Krimo</div>
+            <div class="elim-reason">Moins de 5% des votes 3 semaines consécutives</div>
+            <div class="elim-week">Éliminé semaine 9</div>
+          </div>
+        </div>
+        <div class="elim-card">
+          <div class="elim-av">ML</div>
+          <div style="flex:1">
+            <div class="elim-name">Moumlame</div>
+            <div class="elim-reason">Départ volontaire pour raisons personnelles</div>
+            <div class="elim-week">Éliminé semaine 6</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL REPÊCHAGE -->
+    <div class="vote-panel" id="panel-repechage">
+
+      <!-- Bouton créer vote repêchage -->
+      <button class="btn-create" onclick="toggleForm('form-rep')">
+        + Créer un vote de repêchage
+      </button>
+
+      <!-- Formulaire création repêchage -->
+      <div class="create-form" id="form-rep" style="display:none">
+        <div class="form-title">Nouveau vote de repêchage</div>
+        <div class="form-group">
+          <label class="form-label">Membre à repêcher</label>
+          <select class="form-select" id="rep-membre">
+            <option value="">Sélectionner un membre éliminé</option>
+            <option>Krimo</option>
+            <option>Moumlame</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date de fin du vote</label>
+          <input type="datetime-local" class="form-input" id="rep-date">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-rep')">Annuler</button>
+          <button class="btn-confirm" onclick="creerRepechage()">Créer le vote</button>
+        </div>
+      </div>
+
+      <!-- Vote repêchage en cours -->
+      <div class="section-label" style="margin-top:16px">Vote en cours</div>
+      <div id="rep-votes-encours">
+        <div class="repechage-card">
+          <div class="rep-info">
+            <div class="elim-av" style="opacity:1;width:44px;height:44px;font-size:14px">KR</div>
+            <div>
+              <div class="rep-name">Krimo</div>
+              <div class="rep-detail">60% requis pour le retour</div>
+            </div>
+          </div>
+          <div class="rep-vote-zone">
+            <div class="rep-bar-bg"><div class="rep-bar-fill" id="repbar-krimo" style="width:42%"></div></div>
+            <div class="rep-pct" id="reppct-krimo">42% — il manque 18%</div>
+            <button class="btn-repechage" id="repbtn-krimo" onclick="voterRepechage('krimo', this)">
+              Voter pour son retour
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membres repêchés -->
+      <div class="section-label" style="margin-top:20px">Membres repêchés</div>
+      <div id="rep-liste">
+        <div class="repechage-ok-card">
+          <div class="elim-av" style="opacity:1;background:#e8f5e9;color:#2e7d32;width:40px;height:40px;font-size:13px">OG</div>
+          <div>
+            <div class="rep-name">Ogman</div>
+            <div class="rep-detail">Repêché le 02 mars 2026 · 74% des votes</div>
+          </div>
+          <div class="rep-ok-badge">✓ Retour</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PRONO ===== -->
+  <div class="section" id="prono">
+
+    <!-- Carte profil prono -->
+    <div class="prono-profil-card">
+      <div class="ppc-left">
+        <div class="ppc-avatar" id="prono-avatar">?</div>
+        <div>
+          <div class="ppc-pseudo" id="prono-pseudo">Mon profil</div>
+          <div class="ppc-rank">Classement général · <strong>#247</strong></div>
+        </div>
+      </div>
+      <div class="ppc-pts">
+        <div class="ppc-pts-num" id="prono-total">0</div>
+        <div class="ppc-pts-label">pts</div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="badges-row">
+      <div class="badge-item active" title="Premier prono">🎯</div>
+      <div class="badge-item" title="10 pronos réussis">🔥</div>
+      <div class="badge-item" title="Meilleur du groupe">👑</div>
+      <div class="badge-item locked" title="50 pronos réussis">🏆</div>
+      <div class="badge-item locked" title="100 pronos réussis">💎</div>
+    </div>
+
+    <!-- Sous-onglets style MPP -->
+    <div class="prono-nav">
+      <button class="prono-nav-btn active" onclick="showPronoPanel('semaine', this)">Vote</button>
+      <button class="prono-nav-btn" onclick="showPronoPanel('elim', this)">Élim</button>
+      <button class="prono-nav-btn" onclick="showPronoPanel('top', this)">Top mois</button>
+      <button class="prono-nav-btn" onclick="showPronoPanel('groupes', this)">Groupes</button>
+    </div>
+
+    <!-- PANEL VOTE SEMAINE -->
+    <div class="vote-panel active" id="prono-panel-semaine">
+
+      <div class="prono-week-banner">
+        <div class="pwb-left">
+          <div class="pwb-label">Cette semaine</div>
+          <div class="pwb-title">Qui va gagner ?</div>
+        </div>
+        <div class="pwb-pts">+10 pts</div>
+      </div>
+
+      <div class="prono-categorie">🎭 Divertissement</div>
+      <div class="prono-list" id="prono-list-div">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-tag favori">favori</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+        </div>
+      </div>
+      <button class="btn-prono-submit" id="btn-prono-div" onclick="validerProno('div')" disabled>Confirmer mon prono</button>
+      <div class="prono-confirm" id="confirm-prono-div" style="display:none">
+        <div class="pc-icon">✓</div>
+        <div class="pc-text" id="pc-text-div"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+
+      <div class="prono-categorie" style="margin-top:20px">🚀 Projet de vie</div>
+      <div class="prono-list" id="prono-list-proj">
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+          <div class="prono-tag favori">favori</div>
+        </div>
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+        </div>
+      </div>
+      <button class="btn-prono-submit" id="btn-prono-proj" onclick="validerProno('proj')" disabled>Confirmer mon prono</button>
+      <div class="prono-confirm" id="confirm-prono-proj" style="display:none">
+        <div class="pc-icon">✓</div>
+        <div class="pc-text" id="pc-text-proj"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+    </div>
+
+    <!-- PANEL ÉLIM -->
+    <div class="vote-panel" id="prono-panel-elim">
+      <div class="prono-week-banner">
+        <div class="pwb-left">
+          <div class="pwb-label">Cette semaine</div>
+          <div class="pwb-title">Qui va être éliminé ?</div>
+        </div>
+        <div class="pwb-pts">+10 pts</div>
+      </div>
+      <div class="prono-list" id="prono-list-elim">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-tag protege">protégé</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+          <div class="prono-tag risque">à risque</div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+          <div class="prono-tag risque">à risque</div>
+        </div>
+      </div>
+      <button class="btn-prono-submit" id="btn-prono-elim" onclick="validerProno('elim')" disabled>Confirmer mon prono</button>
+      <div class="prono-confirm" id="confirm-prono-elim" style="display:none">
+        <div class="pc-icon">✓</div>
+        <div class="pc-text" id="pc-text-elim"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+    </div>
+
+    <!-- PANEL TOP MOIS -->
+    <div class="vote-panel" id="prono-panel-top">
+      <div class="prono-week-banner">
+        <div class="pwb-left">
+          <div class="pwb-label">Ce mois-ci</div>
+          <div class="pwb-title">Qui va finir 1er ?</div>
+        </div>
+        <div class="pwb-pts">+10 pts</div>
+      </div>
+      <div class="prono-list" id="prono-list-top">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-tag favori">leader</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+        </div>
+      </div>
+      <button class="btn-prono-submit" id="btn-prono-top" onclick="validerProno('top')" disabled>Confirmer mon prono</button>
+      <div class="prono-confirm" id="confirm-prono-top" style="display:none">
+        <div class="pc-icon">✓</div>
+        <div class="pc-text" id="pc-text-top"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats fin du mois</div>
+      </div>
+
+      <div class="section-label" style="margin-top:24px">Meilleurs pronostiqueurs</div>
+      <div class="prono-lb">
+        <div class="prono-lb-row">
+          <div class="lb-rank r1">1</div>
+          <div class="prono-lb-av">🐺</div>
+          <div class="prono-lb-name">FanNasdas66</div>
+          <div class="prono-lb-pts">130 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank r2">2</div>
+          <div class="prono-lb-av">🔥</div>
+          <div class="prono-lb-name">ChiennetéForever</div>
+          <div class="prono-lb-pts">110 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank r3">3</div>
+          <div class="prono-lb-av">🦁</div>
+          <div class="prono-lb-name">SamosN1</div>
+          <div class="prono-lb-pts">90 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank">4</div>
+          <div class="prono-lb-av">⭐</div>
+          <div class="prono-lb-name">TeamNas2026</div>
+          <div class="prono-lb-pts">80 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank">5</div>
+          <div class="prono-lb-av">🎯</div>
+          <div class="prono-lb-name">PerpignanCity</div>
+          <div class="prono-lb-pts">70 pts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL GROUPES -->
+    <div class="vote-panel" id="prono-panel-groupes">
+      <div class="groupe-actions">
+        <button class="btn-groupe-action" onclick="toggleForm('form-create-groupe')">
+          <span class="bga-icon">+</span>
+          <div>
+            <div class="bga-title">Créer un groupe</div>
+            <div class="bga-sub">Invite tes amis</div>
+          </div>
+        </button>
+        <button class="btn-groupe-action" onclick="toggleForm('form-join-groupe')">
+          <span class="bga-icon">#</span>
+          <div>
+            <div class="bga-title">Rejoindre</div>
+            <div class="bga-sub">Entre le code</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="create-form" id="form-create-groupe" style="display:none">
+        <div class="form-title">Créer un groupe</div>
+        <div class="form-group">
+          <label class="form-label">Nom du groupe</label>
+          <input type="text" class="form-input" id="groupe-nom" placeholder="Ex: Les Chiens du Nord">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-create-groupe')">Annuler</button>
+          <button class="btn-confirm" onclick="creerGroupe()">Créer</button>
+        </div>
+      </div>
+
+      <div class="create-form" id="form-join-groupe" style="display:none">
+        <div class="form-title">Rejoindre un groupe</div>
+        <div class="form-group">
+          <label class="form-label">Code d'invitation</label>
+          <input type="text" class="form-input" id="groupe-code" placeholder="Ex: NAS-2026" maxlength="10" style="text-transform:uppercase;letter-spacing:2px">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn-cancel" onclick="toggleForm('form-join-groupe')">Annuler</button>
+          <button class="btn-confirm" onclick="rejoindreGroupe()">Rejoindre</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:16px">Mes groupes</div>
+      <div id="mes-groupes">
+        <div class="groupe-card" onclick="ouvrirGroupe('les-chiens-66')">
+          <div class="gc-header">
+            <div class="gc-avatar">LC</div>
+            <div class="gc-info">
+              <div class="gc-nom">Les Chiens 66</div>
+              <div class="gc-membres">5 membres · Code : NAS-7731</div>
+            </div>
+            <div class="gc-chevron">›</div>
+          </div>
+          <div class="gc-classement">
+            <div class="gc-rank-row"><span class="gc-pos r1">1</span><span class="gc-pseudo">TounsiFan</span><span class="gc-pts">80 pts</span></div>
+            <div class="gc-rank-row"><span class="gc-pos r2">2</span><span class="gc-pseudo">Moi</span><span class="gc-pts">60 pts</span></div>
+            <div class="gc-rank-row"><span class="gc-pos r3">3</span><span class="gc-pseudo">SamosLover</span><span class="gc-pts">50 pts</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    <!-- Sous-onglets -->
+    <div class="vote-tabs">
+      <div class="vote-tab active" onclick="showPronoPanel('semaine', this)">
+        <span class="vote-tab-icon">🗳️</span>Vote
+      </div>
+      <div class="vote-tab" onclick="showPronoPanel('elim', this)">
+        <span class="vote-tab-icon">❌</span>Élim
+      </div>
+      <div class="vote-tab" onclick="showPronoPanel('top', this)">
+        <span class="vote-tab-icon">🏆</span>Top
+      </div>
+      <div class="vote-tab" onclick="showPronoPanel('groupes', this)">
+        <span class="vote-tab-icon">👥</span>Groupes
+      </div>
+    </div>
+
+    <!-- PANEL VOTE DE LA SEMAINE -->
+    <div class="vote-panel active" id="prono-panel-semaine">
+      <div class="prono-info-banner">
+        <div class="pib-icon">💡</div>
+        <div class="pib-text">Pronostique le vainqueur de chaque catégorie · <strong>+10 pts</strong> si tu as raison</div>
+      </div>
+
+      <div class="section-label">Divertissement — qui va gagner ?</div>
+      <div class="prono-list" id="prono-list-div">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-cote">favori</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'div')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+          <div class="prono-cote"></div>
+        </div>
+      </div>
+      <button class="btn-vote" id="btn-prono-div" onclick="validerProno('div')" disabled>
+        Sélectionne un membre
+      </button>
+      <div class="prono-confirm" id="confirm-prono-div" style="display:none">
+        <div class="pc-text" id="pc-text-div"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+
+      <div class="section-label" style="margin-top:20px">Projet de vie — qui va gagner ?</div>
+      <div class="prono-list" id="prono-list-proj">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-cote">favori</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'proj')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+          <div class="prono-cote"></div>
+        </div>
+      </div>
+      <button class="btn-vote" id="btn-prono-proj" onclick="validerProno('proj')" disabled>
+        Sélectionne un membre
+      </button>
+      <div class="prono-confirm" id="confirm-prono-proj" style="display:none">
+        <div class="pc-text" id="pc-text-proj"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+    </div>
+
+    <!-- PANEL ÉLIMINATION -->
+    <div class="vote-panel" id="prono-panel-elim">
+      <div class="prono-info-banner">
+        <div class="pib-icon">💡</div>
+        <div class="pib-text">Pronostique qui sera éliminé · <strong>+10 pts</strong> si tu as raison</div>
+      </div>
+
+      <div class="section-label">Qui va être éliminé ?</div>
+      <div class="prono-list" id="prono-list-elim">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-cote">protégé</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+          <div class="prono-cote">à risque</div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'elim')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+          <div class="prono-cote">à risque</div>
+        </div>
+      </div>
+      <button class="btn-vote" id="btn-prono-elim" onclick="validerProno('elim')" disabled>
+        Sélectionne un membre
+      </button>
+      <div class="prono-confirm" id="confirm-prono-elim" style="display:none">
+        <div class="pc-text" id="pc-text-elim"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats dimanche 23h59</div>
+      </div>
+    </div>
+
+    <!-- PANEL TOP MOIS -->
+    <div class="vote-panel" id="prono-panel-top">
+      <div class="prono-info-banner">
+        <div class="pib-icon">💡</div>
+        <div class="pib-text">Pronostique le 1er du classement mensuel · <strong>+10 pts</strong> si tu as raison</div>
+      </div>
+
+      <div class="section-label">Qui va finir 1er du mois ?</div>
+      <div class="prono-list" id="prono-list-top">
+        <div class="prono-card" data-membre="Samos" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#ede7f6;color:#512da8">SA</div>
+          <div class="prono-card-name">Samos</div>
+          <div class="prono-cote">leader actuel</div>
+        </div>
+        <div class="prono-card" data-membre="Tounsi" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#e8f5e9;color:#2e7d32">TO</div>
+          <div class="prono-card-name">Tounsi</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Assya" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#fff3e0;color:#e65100">AS</div>
+          <div class="prono-card-name">Assya</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="4BDV" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#fce4ec;color:#c62828">4B</div>
+          <div class="prono-card-name">4BDV</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Leyna" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#e3f2fd;color:#1565c0">LE</div>
+          <div class="prono-card-name">Leyna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Mouna" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#f3e5f5;color:#6a1b9a">MO</div>
+          <div class="prono-card-name">Mouna</div>
+          <div class="prono-cote"></div>
+        </div>
+        <div class="prono-card" data-membre="Cappuccino" onclick="selectProno(this, 'top')">
+          <div class="avatar" style="background:#efebe9;color:#4e342e">CA</div>
+          <div class="prono-card-name">Cappuccino</div>
+          <div class="prono-cote"></div>
+        </div>
+      </div>
+      <button class="btn-vote" id="btn-prono-top" onclick="validerProno('top')" disabled>
+        Sélectionne un membre
+      </button>
+      <div class="prono-confirm" id="confirm-prono-top" style="display:none">
+        <div class="pc-text" id="pc-text-top"></div>
+        <div class="pc-pts">+10 pts si tu as raison · résultats fin du mois</div>
+      </div>
+
+      <!-- Classement pronostiqueurs -->
+      <div class="section-label" style="margin-top:24px">Meilleurs pronostiqueurs</div>
+      <div class="prono-lb">
+        <div class="prono-lb-row">
+          <div class="lb-rank r1">1</div>
+          <div class="prono-lb-name">FanNasdas66</div>
+          <div class="prono-lb-pts">130 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank r2">2</div>
+          <div class="prono-lb-name">ChiennetéForever</div>
+          <div class="prono-lb-pts">110 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank r3">3</div>
+          <div class="prono-lb-name">SamosN1</div>
+          <div class="prono-lb-pts">90 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank">4</div>
+          <div class="prono-lb-name">TeamNas2026</div>
+          <div class="prono-lb-pts">80 pts</div>
+        </div>
+        <div class="prono-lb-row">
+          <div class="lb-rank">5</div>
+          <div class="prono-lb-name">PerpignanCity</div>
+          <div class="prono-lb-pts">70 pts</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://phcawsdpqiekwgbhxwbk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_SgDogPXwp_5MbA3CIFBRLw_K0Fne6Si';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let utilisateur = null;
+let profilData = { pseudo: '', avatar: '?' };
+let selectedAvatarEl = null;
+let pseudoTimer = null;
+let pseudoDisponible = false;
+
+// ===== AUTH PAGES =====
+function showAuthPage(id) {
+  // S'assurer que auth-screen est visible
+  const authScreen = document.getElementById('auth-screen');
+  if (authScreen) authScreen.style.display = 'block';
+  // Cacher toutes les pages
+  document.querySelectorAll('.auth-page').forEach(p => p.classList.remove('active'));
+  // Activer la bonne page
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('active');
+    authScreen.scrollTop = 0;
+  }
+}
+
+// ===== CONNEXION GOOGLE =====
+async function connexionSociale(provider) {
+  if (provider === 'Google') {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://bilalelfantroussi-glitch.github.io/Team-Chiennete/',
+        queryParams: { prompt: 'select_account' }
+      }
+    });
+    if (error) showToast('Erreur : ' + error.message);
+  } else {
+    showToast('Connexion Apple bientôt disponible');
+  }
+}
+
+function connexionInvite() {
+  utilisateur = { pseudo: 'Invité', avatar: '🐺' };
+  showAuthPage('page-avatar');
+}
+
+// ===== VÉRIFICATION PSEUDO =====
+async function verifierPseudo(valeur) {
+  const status = document.getElementById('pseudo-status');
+  const btn = document.getElementById('btn-launch');
+  const suggestions = document.getElementById('pseudo-suggestions');
+  valeur = valeur.trim();
+  if (valeur.length < 3) {
+    status.textContent = valeur.length > 0 ? '⚠️ Minimum 3 caractères' : '';
+    status.style.color = '#e65100';
+    btn.disabled = true; btn.style.opacity = '0.5';
+    suggestions.style.display = 'none';
+    pseudoDisponible = false; return;
+  }
+  status.textContent = '⏳ Vérification...';
+  status.style.color = '#888';
+  clearTimeout(pseudoTimer);
+  pseudoTimer = setTimeout(async () => {
+    const { data } = await sb.from('profiles').select('pseudo').eq('pseudo', valeur).maybeSingle();
+    if (data) {
+      status.textContent = '❌ Ce pseudo est déjà pris';
+      status.style.color = '#c62828';
+      btn.disabled = true; btn.style.opacity = '0.5';
+      pseudoDisponible = false;
+      afficherSuggestions(valeur);
+    } else {
+      status.textContent = '✅ Pseudo disponible !';
+      status.style.color = '#2e7d32';
+      btn.disabled = false; btn.style.opacity = '1';
+      pseudoDisponible = true;
+      suggestions.style.display = 'none';
+    }
+  }, 500);
+}
+
+function afficherSuggestions(base) {
+  const suggestions = document.getElementById('pseudo-suggestions');
+  const list = document.getElementById('suggestions-list');
+  const props = [base+'_'+Math.floor(Math.random()*99+1), base+Math.floor(Math.random()*999+1), 'Le'+base, base+'_fan', base+'2026', 'X'+base];
+  list.innerHTML = '';
+  props.forEach(p => {
+    const btn = document.createElement('button');
+    btn.textContent = p;
+    btn.style.cssText = 'background:#f5f5f5;border:1.5px solid #eee;border-radius:99px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#111';
+    btn.onclick = () => { document.getElementById('input-pseudo-auth').value = p; verifierPseudo(p); };
+    list.appendChild(btn);
+  });
+  suggestions.style.display = 'block';
+}
+
+// ===== LANCER APPLI =====
+async function lancerAppli() {
+  const pseudo = document.getElementById('input-pseudo-auth').value.trim();
+  if (!pseudo) { showToast('Entre ton pseudo !'); return; }
+  if (!pseudoDisponible) { showToast('Ce pseudo est déjà pris !'); return; }
+  const avatar = (profilData.avatar && profilData.avatar !== '?') ? profilData.avatar : '🐺';
+
+  utilisateur = { ...(utilisateur || {}), pseudo, avatar };
+  profilData = { pseudo, avatar };
+  document.getElementById('welcome-pseudo-big').textContent = pseudo;
+  document.getElementById('welcome-avatar-big').textContent = avatar;
+
+  // Sauvegarder en arrière-plan sans bloquer la navigation
+  try {
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      sb.from('profiles').upsert({ id: user.id, pseudo, avatar, email: user.email, updated_at: new Date().toISOString() });
+    }
+  } catch(e) { console.log('Sauvegarde différée'); }
+
+  showAuthPage('page-infos');
+}
+
+// ===== INFOS PERSONNELLES =====
+async function validerInfos() {
+  const prenom = document.getElementById('input-prenom').value.trim();
+  const nom = document.getElementById('input-nom').value.trim();
+  const age = document.getElementById('input-age').value;
+  const pays = document.getElementById('input-pays').value;
+  const ville = document.getElementById('input-ville').value.trim();
+  const depuis = document.getElementById('input-depuis').value;
+
+  if (!prenom || !nom) { showToast('Entre ton prénom et ton nom !'); return; }
+  if (!age || age < 13) { showToast('Entre un âge valide (13 ans minimum) !'); return; }
+  if (!pays) { showToast('Sélectionne ton pays !'); return; }
+
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    await sb.from('profiles').upsert({
+      id: user.id, prenom, nom, age: parseInt(age), pays,
+      ville: ville || null, depuis: depuis || null,
+      updated_at: new Date().toISOString()
+    });
+  }
+  showAuthPage('page-welcome');
+}
+
+// ===== DÉMARRER APPLI =====
+function demarrerAppli() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('splash').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'block';
+  app.classList.add('visible');
+  appliquerProfil();
+}
+
+function appliquerProfil() {
+  if (!utilisateur) return;
+  const pseudo = utilisateur.pseudo || 'Fan';
+  const avatar = utilisateur.avatar || '🐺';
+  profilData = { pseudo, avatar };
+  document.getElementById('header-pseudo').textContent = pseudo;
+  document.getElementById('header-avatar').textContent = avatar;
+  document.getElementById('pm-pseudo').textContent = pseudo;
+  document.getElementById('pm-avatar').textContent = avatar;
+  const pe = document.getElementById('prono-pseudo');
+  const pa = document.getElementById('prono-avatar');
+  if (pe) pe.textContent = pseudo;
+  if (pa) pa.textContent = avatar;
+}
+
+async function chargerProfilUtilisateur(user) {
+  try {
+    const { data: profil } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    if (profil && profil.pseudo) {
+      utilisateur = { id: user.id, email: user.email, pseudo: profil.pseudo, avatar: profil.avatar || '🐺' };
+      return true;
+    }
+  } catch(e) {}
+  utilisateur = { id: user.id, email: user.email, pseudo: '', avatar: '🐺' };
+  return false;
+}
+
+// ===== SESSION =====
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    const aUnProfil = await chargerProfilUtilisateur(session.user);
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('auth-screen').style.display = 'block';
+    if (aUnProfil) {
+      document.getElementById('auth-screen').style.display = 'none';
+      demarrerAppli();
+    } else {
+      showAuthPage('page-avatar');
+    }
+  } else if (event === 'SIGNED_OUT') {
+    utilisateur = null;
+    profilData = { pseudo: '', avatar: '?' };
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('auth-screen').style.display = 'block';
+    showAuthPage('page-login');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    const aUnProfil = await chargerProfilUtilisateur(session.user);
+    document.getElementById('splash').style.display = 'none';
+    if (aUnProfil) {
+      document.getElementById('auth-screen').style.display = 'none';
+      demarrerAppli();
+    } else {
+      document.getElementById('auth-screen').style.display = 'block';
+      showAuthPage('page-avatar');
+    }
+  } else {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'block';
+  }
+});
+
+function entrerApp() {
+  document.getElementById('splash').classList.add('hidden');
+  setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500);
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showVotePanel(id, tab) {
+  document.querySelectorAll('.vote-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.vote-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+  if (id === 'projet') {
+    const day = new Date().getDay();
+    const locked = document.getElementById('proj-locked');
+    const list = document.getElementById('list-proj');
+    const btn = document.getElementById('btn-proj');
+    if (day !== 0 && day !== 6) {
+      if (locked) locked.style.display = 'flex';
+      if (list) { list.style.opacity = '0.35'; list.style.pointerEvents = 'none'; }
+      if (btn) btn.style.display = 'none';
+    } else {
+      if (locked) locked.style.display = 'none';
+      if (list) { list.style.opacity = '1'; list.style.pointerEvents = 'auto'; }
+    }
+  }
+  const desc = document.getElementById('result-desc');
+  if (desc) desc.innerHTML = id === 'divertissement' ? 'Votes cumulés toute la semaine' : 'Vote ouvert samedi & dimanche';
+}
+
+const votes = { div: null, proj: null };
+
+function selectMember(card, type) {
+  if (votes[type]) return;
+  if (type === 'proj') {
+    const day = new Date().getDay();
+    if (day !== 0 && day !== 6) { showToast('Vote ouvert uniquement le samedi et dimanche !'); return; }
+  }
+  const list = document.getElementById('list-' + type);
+  if (!list) return;
+  list.querySelectorAll('.member-card').forEach(c => { c.classList.remove('selected'); c.style.cssText = 'background:#fff; border-color:#eee;'; });
+  card.classList.add('selected');
+  card.style.cssText = 'background:#f0f0f0; border-color:#111;';
+  const name = card.dataset.name;
+  const btn = document.getElementById('btn-' + type);
+  if (btn) { btn.disabled = false; btn.textContent = 'Voter pour ' + name + ' →'; }
+}
+
+function validerVote(type) {
+  if (votes[type]) return;
+  const list = document.getElementById('list-' + type);
+  if (!list) return;
+  const selected = list.querySelector('.member-card.selected');
+  if (!selected) return;
+  votes[type] = selected.dataset.id;
+  const name = selected.dataset.name;
+  list.querySelectorAll('.member-card').forEach(c => { c.onclick = null; c.style.cursor = 'default'; if (!c.classList.contains('selected')) c.style.opacity = '0.35'; });
+  const btn = document.getElementById('btn-' + type);
+  if (btn) btn.style.display = 'none';
+  const confirmBox = document.getElementById('confirm-' + type);
+  const confirmText = document.getElementById('confirm-text-' + type);
+  if (confirmBox) confirmBox.style.display = 'block';
+  if (confirmText) confirmText.textContent = 'Vous avez voté pour ' + name;
+  startNextVoteTimer(type);
+  showToast('Vote ' + (type === 'div' ? 'Divertissement' : 'Projet de vie') + ' · ' + name + ' !');
+}
+
+function startNextVoteTimer(type) {
+  const nextVote = new Date();
+  if (type === 'div') { nextVote.setDate(nextVote.getDate() + 1); nextVote.setHours(0,0,0,0); }
+  else { const day = nextVote.getDay(); nextVote.setDate(nextVote.getDate() + (day === 0 ? 7 : 7 - day)); nextVote.setHours(0,0,0,0); }
+  function update() {
+    const diff = Math.floor((nextVote - new Date()) / 1000);
+    const el = document.getElementById('next-vote-' + type);
+    if (!el) return;
+    if (diff <= 0) { el.textContent = 'maintenant !'; return; }
+    const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
+    el.textContent = d > 0 ? d+'j '+h+'h '+String(m).padStart(2,'0')+'min' : h+'h '+String(m).padStart(2,'0')+'min '+String(s).padStart(2,'0')+'s';
+  }
+  update(); setInterval(update, 1000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function getSecsUntilSunday() {
+  const now = new Date(), day = now.getDay(), daysUntilSun = day === 0 ? 7 : 7 - day;
+  const nextSun = new Date(now);
+  nextSun.setDate(now.getDate() + daysUntilSun); nextSun.setHours(23,59,0,0);
+  return Math.floor((nextSun - now) / 1000);
+}
+
+function formatTimer(secs) {
+  if (secs <= 0) return 'Résultats en direct !';
+  const d = Math.floor(secs/86400), h = Math.floor((secs%86400)/3600), m = Math.floor((secs%3600)/60);
+  if (d > 0) return d+'j '+h+'h '+m+'min';
+  if (h > 0) return h+'h '+m+'min';
+  return m+' min restantes';
+}
+
+let totalSecs = getSecsUntilSunday();
+function updateTimer() {
+  if (totalSecs > 0) totalSecs--;
+  const str = formatTimer(totalSecs);
+  ['countdown-div','countdown-proj'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = str; });
+}
+updateTimer(); setInterval(updateTimer, 1000);
+
+function updateResetTimer() {
+  const now = new Date(), nextReset = new Date(now.getFullYear(), now.getMonth()+1, 1);
+  const diff = Math.floor((nextReset - now) / 1000);
+  const el = document.getElementById('reset-timer');
+  if (!el) return;
+  const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60);
+  el.textContent = 'Remise à zéro dans '+d+'j '+h+'h '+m+'min';
+}
+updateResetTimer(); setInterval(updateResetTimer, 60000);
+
+const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const nowDate = new Date();
+const titleEl = document.querySelector('.reset-title');
+if (titleEl) titleEl.textContent = 'Classement de '+mois[nowDate.getMonth()]+' '+nowDate.getFullYear();
+
+function showElimPanel(id, tab) {
+  document.querySelectorAll('#eliminations .vote-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#eliminations .vote-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+
+function toggleForm(id) {
+  const form = document.getElementById(id);
+  if (!form) return;
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function creerElim() {
+  const membre = document.getElementById('elim-membre').value;
+  const date = document.getElementById('elim-date').value;
+  const raison = document.getElementById('elim-raison').value;
+  if (!membre || !date || !raison) { showToast('Remplis tous les champs !'); return; }
+  const card = document.createElement('div');
+  card.className = 'vote-encours-card';
+  card.innerHTML = `<div class="vec-header"><div><div class="vec-name">${membre}</div><div class="vec-raison">${raison}</div></div><div class="vec-timer">Vote ouvert</div></div><div class="rep-bar-bg"><div class="rep-bar-fill" style="width:0%"></div></div><div class="vec-pct">0% pour l'élimination</div><button class="btn-repechage" onclick="voterElim(this)">Voter pour l'éliminer</button>`;
+  document.getElementById('elim-votes-encours').appendChild(card);
+  toggleForm('form-elim');
+  document.getElementById('elim-membre').value = '';
+  document.getElementById('elim-date').value = '';
+  document.getElementById('elim-raison').value = '';
+  showToast("Vote d'élimination créé !");
+}
+
+function voterElim(btn) {
+  const card = btn.closest('.vote-encours-card');
+  const bar = card.querySelector('.rep-bar-fill');
+  const pct = card.querySelector('.vec-pct');
+  const newPct = Math.min((parseInt(bar.style.width) || 0) + 8, 100);
+  bar.style.width = newPct + '%';
+  pct.textContent = newPct+"% pour l'élimination";
+  btn.disabled = true; btn.textContent = '✓ Vote enregistré';
+  showToast('Vote enregistré !');
+}
+
+function creerRepechage() {
+  const membre = document.getElementById('rep-membre').value;
+  const date = document.getElementById('rep-date').value;
+  if (!membre || !date) { showToast('Remplis tous les champs !'); return; }
+  const id = membre.toLowerCase().replace(' ', '-');
+  const card = document.createElement('div');
+  card.className = 'repechage-card';
+  card.innerHTML = `<div class="rep-info"><div class="elim-av" style="opacity:1;width:44px;height:44px;font-size:14px">${membre.slice(0,2).toUpperCase()}</div><div><div class="rep-name">${membre}</div><div class="rep-detail">Vote lancé le ${new Date().toLocaleDateString("fr-FR")}</div></div></div><div class="rep-vote-zone"><div class="rep-bar-bg"><div class="rep-bar-fill" id="repbar-${id}" style="width:0%"></div></div><div class="rep-pct" id="reppct-${id}">0% — il manque 60%</div><button class="btn-repechage" id="repbtn-${id}" onclick="voterRepechage('${id}', this)">Voter pour son retour</button></div>`;
+  document.getElementById('rep-votes-encours').appendChild(card);
+  toggleForm('form-rep');
+  document.getElementById('rep-membre').value = '';
+  document.getElementById('rep-date').value = '';
+  showToast('Vote de repêchage créé !');
+}
+
+function ouvrirProfil() {
+  document.getElementById('profil-modal').style.display = 'flex';
+  document.getElementById('input-pseudo').value = profilData.pseudo;
+}
+
+function fermerProfil() {
+  document.getElementById('profil-modal').style.display = 'none';
+}
+
+function selectAvatar(el, emoji) {
+  if (selectedAvatarEl) selectedAvatarEl.classList.remove('selected');
+  el.classList.add('selected');
+  selectedAvatarEl = el;
+  profilData.avatar = emoji;
+}
+
+async function sauvegarderProfil() {
+  const pseudo = document.getElementById('input-pseudo').value.trim();
+  if (!pseudo) { showToast('Entre un pseudo !'); return; }
+  const avatar = profilData.avatar && profilData.avatar !== '?' ? profilData.avatar : utilisateur?.avatar || '🐺';
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    await sb.from('profiles').upsert({ id: user.id, pseudo, avatar, email: user.email, updated_at: new Date().toISOString() });
+  }
+  profilData.pseudo = pseudo; profilData.avatar = avatar;
+  if (utilisateur) { utilisateur.pseudo = pseudo; utilisateur.avatar = avatar; }
+  appliquerProfil(); fermerProfil();
+  showToast('Profil sauvegardé ! ✅');
+}
+
+async function seDeconnecter() {
+  const confirmer = confirm('Tu veux vraiment te déconnecter ?');
+  if (!confirmer) return;
+  await sb.auth.signOut();
+  utilisateur = null; profilData = { pseudo: '', avatar: '?' };
+  fermerProfil();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('auth-screen').style.display = 'block';
+  showAuthPage('page-login');
+  showToast('Déconnecté !');
+}
+
+async function supprimerCompte() {
+  const confirmer = confirm('⚠️ Supprimer définitivement ton compte ? Cette action est irréversible.');
+  if (!confirmer) return;
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    await sb.from('profiles').delete().eq('id', user.id);
+    await sb.auth.signOut();
+    utilisateur = null; profilData = { pseudo: '', avatar: '?' };
+    fermerProfil();
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('auth-screen').style.display = 'block';
+    showAuthPage('page-login');
+    showToast('Compte supprimé. Au revoir !');
+  }
+}
+
+const pronos = {}; let pronoPoints = 0;
+
+function showPronoPanel(id, tab) {
+  document.querySelectorAll('#prono .vote-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#prono .vote-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('prono-panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+
+function selectProno(card, type) {
+  if (pronos[type]) return;
+  const list = document.getElementById('prono-list-' + type);
+  if (!list) return;
+  list.querySelectorAll('.prono-card').forEach(c => { c.classList.remove('selected'); c.style.background='#fff'; c.style.borderColor='#eee'; });
+  card.classList.add('selected'); card.style.background='#f0f0f0'; card.style.borderColor='#111';
+  const membre = card.dataset.membre;
+  const btn = document.getElementById('btn-prono-' + type);
+  if (btn) { btn.disabled = false; btn.textContent = 'Confirmer mon prono — ' + membre; }
+}
+
+function validerProno(type) {
+  if (pronos[type]) return;
+  const list = document.getElementById('prono-list-' + type);
+  if (!list) return;
+  const selected = list.querySelector('.prono-card.selected');
+  if (!selected) return;
+  pronos[type] = selected.dataset.membre;
+  list.querySelectorAll('.prono-card').forEach(c => { c.onclick=null; c.style.cursor='default'; if (!c.classList.contains('selected')) c.style.opacity='0.35'; else { c.style.background='#fffde7'; c.style.borderColor='#FFD700'; } });
+  const btn = document.getElementById('btn-prono-' + type);
+  if (btn) btn.style.display = 'none';
+  const confirm = document.getElementById('confirm-prono-' + type);
+  const text = document.getElementById('pc-text-' + type);
+  if (confirm) confirm.style.display = 'block';
+  if (text) text.textContent = 'Prono enregistré — ' + selected.dataset.membre;
+  showToast('Prono enregistré · +10 pts si tu as raison !');
+}
+
+function creerGroupe() {
+  const nom = document.getElementById('groupe-nom').value.trim();
+  if (!nom) { showToast('Entre un nom de groupe !'); return; }
+  const code = 'NAS-' + Math.floor(1000 + Math.random() * 9000);
+  const initiales = nom.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const card = document.createElement('div');
+  card.className = 'groupe-card';
+  card.innerHTML = `<div class="gc-header"><div class="gc-avatar">${initiales}</div><div class="gc-info"><div class="gc-nom">${nom}</div><div class="gc-membres">1 membre · Code : ${code}</div></div><div class="gc-chevron">›</div></div>`;
+  document.getElementById('mes-groupes').prepend(card);
+  toggleForm('form-create-groupe');
+  document.getElementById('groupe-nom').value = '';
+  showToast('Groupe créé · Code : ' + code);
+}
+
+function rejoindreGroupe() {
+  const code = document.getElementById('groupe-code').value.trim().toUpperCase();
+  if (!code) { showToast("Entre un code d'invitation !"); return; }
+  toggleForm('form-join-groupe');
+  document.getElementById('groupe-code').value = '';
+  showToast('Groupe rejoint avec le code ' + code + ' !');
+}
+
+function ouvrirGroupe(id) { showToast('Détail du groupe — bientôt disponible !'); }
+
+const repVotes = {};
+function voterRepechage(id, btn) {
+  if (repVotes[id]) return;
+  repVotes[id] = true;
+  if (!btn) btn = document.getElementById('repbtn-' + id);
+  const bar = document.getElementById('repbar-' + id);
+  const pct = document.getElementById('reppct-' + id);
+  const newPct = Math.min((parseInt(bar.style.width)||0) + 5, 100);
+  bar.style.width = newPct + '%';
+  if (newPct >= 60) { bar.style.background='#2e7d32'; pct.innerHTML='<span style="color:#2e7d32;font-weight:700">✓ '+newPct+'% — Repêchage validé !</span>'; }
+  else { pct.textContent = newPct+'% — il manque '+(60-newPct)+'%'; }
+  if (btn) { btn.disabled=true; btn.classList.add('voted'); btn.textContent='✓ Vote enregistré'; }
+  showToast('Vote repêchage enregistré !');
+}
+
+function showGroupePanel(id, btn) {
+  document.querySelectorAll('.groupe-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.prono-nav-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('groupe-panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function ouvrirSemaine(id, titre) {
+  document.getElementById('semaine-titre').textContent = titre;
+  document.getElementById('semaine-page').style.display = 'block';
+}
+
+function fermerSemaine() {
+  document.getElementById('semaine-page').style.display = 'none';
+}
+</script>
+</body>
+</html>
